@@ -27,8 +27,24 @@ const CHAT_KNOWLEDGE = [
     response: "You can get early access right from this page—scroll to the section above or click 'Get early access' in the nav. Enter your email and we'll be in touch. No credit card required!"
   },
   {
-    keywords: ['pricing', 'cost', 'price', 'how much'],
-    response: "Pricing details are on our Pricing page—check the navigation for the link. Early access is free and doesn't require a credit card. We'd love to show you how Probable can fit your team."
+    keywords: ['pricing', 'cost', 'price', 'how much', 'plans'],
+    response: "We offer three plans:\n\n• Individual — $29/month: Up to 3 forecast models, 1 data source, real-time updates, export to CSV & PDF\n• Team — $99/user/month (most popular): Unlimited models, 5 data sources, shared dashboards, Slack alerts, API, SSO\n• Enterprise — Custom: Everything in Team plus unlimited sources, dedicated success manager, on-premise, SLA\n\nEarly access and free trials don't require a credit card. Check our Pricing page for full details."
+  },
+  {
+    keywords: ['individual', 'solo', 'analyst'],
+    response: "The Individual plan ($29/month) is for analysts and operators who need probabilistic forecasts. It includes up to 3 forecast models, 1 data source connection, real-time probability updates, and export to CSV & PDF. Great for getting started."
+  },
+  {
+    keywords: ['team plan', 'team tier'],
+    response: "The Team plan ($99/user/month, billed annually, min. 3 seats) is our most popular. It includes unlimited forecast models, 5 data source connections, shared dashboards & scenarios, Slack & email alerts, API access, priority support, and optional SSO. Includes a 14-day free trial."
+  },
+  {
+    keywords: ['enterprise', 'custom'],
+    response: "The Enterprise plan is custom-built for finance and leadership at scale. It includes everything in Team plus unlimited data sources, a dedicated success manager, custom integrations, on-premise deployment, SLA & compliance support, training, and volume discounts. Contact sales for pricing."
+  },
+  {
+    keywords: ['free trial', 'trial'],
+    response: "Team and Enterprise plans include a 14-day free trial. No credit card required. You can also get early access from our homepage—enter your email and we'll be in touch."
   },
   {
     keywords: ['data', 'connect', 'integrate', 'sources'],
@@ -41,6 +57,10 @@ const CHAT_KNOWLEDGE = [
   {
     keywords: ['case stud', 'example', 'customer', 'success'],
     response: "We have case studies that show how teams use Probable—check the 'Case studies' link in the navigation for real examples and outcomes."
+  },
+  {
+    keywords: ['contact', 'support', 'bug', 'reach', 'email', 'help'],
+    response: "You can reach us through our Contact page—click 'Contact' in the navigation. Submit customer support requests, bug reports, or general inquiries there. All submissions go to info@francescatabor.com."
   }
 ]
 
@@ -78,6 +98,25 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('Early access signup:', email)
       alert('Thanks! We\'ll be in touch soon.')
       ctaForm.reset()
+    })
+  }
+
+  // Contact form — mailto to info@francescatabor.com
+  const contactForm = document.getElementById('contact-form')
+  if (contactForm) {
+    contactForm.addEventListener('submit', (e) => {
+      e.preventDefault()
+      const email = contactForm.dataset.email || 'info@francescatabor.com'
+      const name = contactForm.querySelector('[name="name"]').value.trim()
+      const userEmail = contactForm.querySelector('[name="email"]').value.trim()
+      const type = contactForm.querySelector('[name="type"]').value
+      const message = contactForm.querySelector('[name="message"]').value.trim()
+      const subject = encodeURIComponent(`[Probable] ${type}: ${name}`)
+      const body = encodeURIComponent(
+        `Name: ${name}\nEmail: ${userEmail}\nRequest type: ${type}\n\nMessage:\n${message}`
+      )
+      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`
+      contactForm.reset()
     })
   }
 
