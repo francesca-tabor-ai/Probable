@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Probable — Predict with confidence. Make better decisions with probabilistic intelligence." />
+    <title>Probable — Predict with Confidence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles/main.css" />
+  </head>
+  <body>
+    <div class="noise" aria-hidden="true"></div>
+
+    <header class="header">
+      <a href="/" class="logo">Probable</a>
+      <nav class="nav">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="#cta" class="nav-cta">Get early access</a>
+      </nav>
+      <button class="menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </header>
+
+    <main>
+      <section class="hero">
+        <p class="hero-eyebrow">Probabilistic intelligence for modern teams</p>
+        <h1 class="hero-title">
+          Predict with<br />
+          <em>confidence</em>
+        </h1>
+        <p class="hero-subtitle">
+          Turn uncertainty into clarity. Probable helps you make better decisions
+          by quantifying risk, forecasting outcomes, and understanding what’s
+          likely to happen next.
+        </p>
+        <div class="hero-actions">
+          <a href="#cta" class="btn btn-primary">Request early access</a>
+          <a href="#how-it-works" class="btn btn-ghost">See how it works</a>
+        </div>
+        <div class="hero-visual">
+          <div class="probability-ring" aria-hidden="true">
+            <svg viewBox="0 0 200 200" class="ring-svg">
+              <circle class="ring-bg" cx="100" cy="100" r="90" />
+              <circle class="ring-fill" cx="100" cy="100" r="90" pathLength="100" />
+            </svg>
+            <span class="ring-value">87%</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="features" class="features">
+        <h2 class="section-title">Built for the uncertain</h2>
+        <div class="features-grid">
+          <article class="feature-card">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0" />
+                <path d="M12 7v5l3 3" />
+              </svg>
+            </div>
+            <h3>Real-time forecasting</h3>
+            <p>Get probability estimates that update as new data arrives. No more static snapshots—your forecasts stay current.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                <path d="M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z" />
+              </svg>
+            </div>
+            <h3>Quantified risk</h3>
+            <p>See the full distribution of possible outcomes, not just a single number. Understand both best and worst case.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                <path d="M2 17l10 5 10-5" />
+              </svg>
+            </div>
+            <h3>Decision-ready outputs</h3>
+            <p>Export confidence intervals, scenario analyses, and risk metrics directly into your workflows and reports.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="how-it-works" class="how-it-works">
+        <h2 class="section-title">How it works</h2>
+        <div class="steps">
+          <div class="step">
+            <span class="step-num">01</span>
+            <h3>Connect your data</h3>
+            <p>Link your existing sources—spreadsheets, databases, APIs. Probable learns your patterns without moving your data.</p>
+          </div>
+          <div class="step">
+            <span class="step-num">02</span>
+            <h3>Define what matters</h3>
+            <p>Specify the outcomes you care about. We’ll model the uncertainty around each and surface the key drivers.</p>
+          </div>
+          <div class="step">
+            <span class="step-num">03</span>
+            <h3>Act on probabilities</h3>
+            <p>Use our dashboards, alerts, and integrations to make decisions backed by real probabilistic estimates.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="cta" class="cta">
+        <h2 class="cta-title">Ready to predict with confidence?</h2>
+        <p class="cta-subtitle">Join the waitlist for early access. No credit card required.</p>
+        <form class="cta-form" action="#" method="post">
+          <input
+            type="email"
+            name="email"
+            placeholder="you@company.com"
+            required
+            autocomplete="email"
+          />
+          <button type="submit" class="btn btn-primary">Get early access</button>
+        </form>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <a href="/" class="logo">Probable</a>
+      <p class="footer-copy">© 2025 Probable. All rights reserved.</p>
+    </footer>
+
+    <script src="/scripts/main.js"></script>
+  </body>
+</html>
