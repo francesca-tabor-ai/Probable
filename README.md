@@ -1,71 +1,87 @@
 # Probable
 
-Predict with confidence. A landing page for Probable — probabilistic intelligence for modern teams.
+**Turn every news event into a living data project — automatically.**
+
+Probable is an AI-native data journalism and forecasting platform that continuously ingests news and data, and automatically produces evidence-based stories with probabilistic forecasts. Transparent methodology, instant scaling, no analysts required.
 
 ---
 
-## Platform Description
+## What Probable Does
 
-*Written by the Product Manager*
-
-Probable is probabilistic intelligence for teams who make high-stakes decisions under uncertainty. It turns raw data into quantified forecasts, risk distributions, and decision-ready insights—so you stop guessing and start acting on what's likely to happen.
-
-### Who It's For (Ideal Customer Profile)
-
-Our ideal customers are **ops leads, strategy teams, and finance leaders** at growth-stage and mid-market companies (Series A–D) who:
-
-- Own revenue targets, resource planning, or product roadmaps
-- Operate in fast-changing environments where outcomes are uncertain
-- Need to communicate forecasts and risks clearly to leadership and boards
-- Are tired of point estimates and “best guess” scenarios
-
-### Pain Points We Solve
-
-Today’s teams are stuck with:
-
-- **Single-number forecasts** that hide the real range of outcomes and create false certainty
-- **Static snapshots** that go stale as new data arrives, forcing manual re-work
-- **Scattered tools**—spreadsheets, BI dashboards, separate risk models—that don’t talk to each other
-- **Gut-feel decisions** when leadership asks “how confident are we?” and there’s no clear answer
-
-The result: missed targets, misallocated resources, and slower, less confident decision-making.
-
-### Why Probable Is Different
-
-Probable is built around **probabilistic thinking** from the ground up—not a bolt-on to traditional forecasting.
+Probable transforms breaking news into transparent, probabilistic data journalism — complete with forecasts, charts, and methodology — without adding analysts to your newsroom. It turns raw data into quantified forecasts, risk distributions, and decision-ready insights so you stop guessing and start acting on what's likely to happen.
 
 | Others offer… | Probable offers… |
 |---------------|------------------|
-| Point estimates | Full probability distributions and confidence intervals |
-| One-off reports | Real-time forecasts that update as data changes |
-| Isolated risk models | Integrated risk, scenario, and forecast views |
-| Generic dashboards | Decision-ready outputs tailored to your workflows |
+| Static snapshots | Real-time forecasts that update as data changes |
+| Manual analysis | Automated synthesis of news into actionable insight |
+| Black-box predictions | Transparent methodology and auditable forecasts |
+| Single-number forecasts | Full probability distributions and confidence intervals |
 
-We connect to your existing data sources (spreadsheets, databases, APIs) without moving data. You define the outcomes that matter; we model uncertainty and surface the drivers. The result is forecasts you can trust and explain, not black-box predictions.
+---
 
-### Expected Results & ROI
+## Who It's For (Ideal Customer Profiles)
 
-Teams using Probable typically see:
+### Tier 1 — Primary Focus
+- **Digital media organizations** — Online news publishers, data journalism teams, newsletter-first media, financial news publishers  
+  *Roles: Editor-in-Chief, Head of Data Journalism, CTO, Head of Audience*
+- **Financial research & investment firms** — Hedge funds, asset managers, macro research firms  
+  *Roles: Chief Investment Officer, Head of Research, Portfolio Manager, Quant Lead*
 
-- **Faster decisions** — Probabilistic estimates reduce back-and-forth and “what-if” paralysis by clarifying realistic ranges
-- **Fewer surprises** — Understanding best and worst case helps you plan contingencies instead of reacting when things go wrong
-- **More credible forecasts** — Confidence intervals and scenario analyses give leadership and investors a clear view of risk
-- **Time back** — Less manual re-forecasting as data changes; real-time updates keep forecasts current
+### Tier 2
+- **Independent analysts & newsletter creators** — Substack writers, creator journalists, niche industry analysts
+- **Data & intelligence platforms** — Economic intelligence, market intelligence, risk platforms
 
-The ROI comes from better resource allocation, fewer costly misses, and faster cycle times on strategic decisions—often paying back within a single planning cycle for teams that rely on accurate forecasts.
+### Tier 3
+- **Government & policy teams** — Policy units, think tanks, NGOs, central banks
+
+### Best single starting target
+**Head of Data Journalism** at a digital-first media company (10–200 journalists). They have urgent pain, budget authority, and immediately understand the value of probabilistic journalism.
+
+---
+
+## Core Value Propositions
+
+- **Scale data journalism coverage** without hiring analysts
+- **Publish faster** — automated story generation and forecasts
+- **Differentiate** with transparent, FiveThirtyEight-level analysis
+- **Build reader trust** with evidence-based, probabilistic reporting
+- **Early trend identification** via scenario analysis and probability modelling
+
+---
+
+## Project Structure
+
+```
+Probable/
+├── apps/
+│   ├── frontend/     # Probable.news React product UI (forecast cards, charts)
+│   ├── admin/        # Admin dashboard (feeds, articles, stories, forecasts, integrations)
+│   └── api/          # Python FastAPI backend
+├── payments/         # Stripe checkout & webhooks (subscriptions)
+├── core/             # Shared Python config
+├── public/           # Static assets
+└── scripts/          # DB migrations, seeding, utilities
+```
+
+---
 
 ## Setup
 
+### Root (marketing landing)
 ```bash
 npm install
+npm run dev
 ```
+Open [http://localhost:5173](http://localhost:5173)
 
-## Apps
+### Apps
+- **Frontend** — `cd apps/frontend && npm install && npm run dev`
+- **Admin** — `cd apps/admin && npm install && npm run dev` (requires API on port 8000; Vite proxies `/api` to backend)
+- **Payments** — `cd payments && npm install` — Stripe checkout & webhook server. Copy `payments/.env.example` to `.env` and configure.
 
-- **`apps/frontend`** — Probable.news React product UI (forecast cards, charts). Run: `cd apps/frontend && npm install && npm run dev`
-- **`apps/admin`** — Admin dashboard with full CRUD for feeds, articles, stories, forecasts, data sources, datasets, users, and **Integrations** (App Marketplace). Run: `cd apps/admin && npm install && npm run dev` (requires API on port 8000; Vite proxies `/api` to backend)
+The API runs separately (`Dockerfile.api`).
 
-The root `npm run dev` serves the main marketing landing (static HTML). The API runs separately (`Dockerfile.api`).
+---
 
 ## Development
 
@@ -73,58 +89,54 @@ The root `npm run dev` serves the main marketing landing (static HTML). The API 
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) in your browser.
-
 ## Build
 
 ```bash
 npm run build
 ```
+Output goes to `dist/`. Preview with `npm run preview`.
 
-Output goes to the `dist/` folder. Preview the production build with:
-
-```bash
-npm run preview
-```
+---
 
 ## Auth
 
-Sign up and log in via the API:
-
 - **POST /api/v1/auth/signup** — `{"email": "...", "password": "...", "full_name": "..."}`
-- **POST /api/v1/auth/login** — `{"email": "...", "password": "..."}` returns `{access_token, token_type}`
+- **POST /api/v1/auth/login** — returns `{access_token, token_type}`
 - **GET /api/v1/auth/me** — requires `Authorization: Bearer <token>`
 
 Set `SECRET_KEY` in production (e.g. `openssl rand -hex 32`).
 
+---
+
 ## Database
 
-After creating the database (local or Railway), run migrations and seed:
+After creating the database (local or Railway):
 
 ```bash
-# Run migrations
 alembic upgrade head
-
-# Seed sample data (idempotent) — includes marketplace apps
 python scripts/seed_db.py
 ```
 
+---
+
 ## App Marketplace
 
-The **Integrations** page in the admin dashboard lets users connect apps (Slack, Google Sheets, Zapier, etc.) for advanced probabilistic workflows. Marketplace apps are seeded by `seed_db.py`. API endpoints:
+The **Integrations** page in the admin lets users connect apps (Slack, Google Sheets, Zapier, etc.). API endpoints:
 
-- `GET /api/marketplace/apps` — List apps (public)
+- `GET /api/marketplace/apps` — List apps
 - `GET /api/marketplace/apps/{slug}` — Get app by slug
-- `GET /api/marketplace/integrations` — List user's connected apps (auth required)
-- `POST /api/marketplace/integrations` — Connect an app (auth required)
+- `GET /api/marketplace/integrations` — User's connected apps (auth required)
+- `POST /api/marketplace/integrations` — Connect app (auth required)
 - `DELETE /api/marketplace/integrations/{id}` — Disconnect (auth required)
+
+---
 
 ## Deploy Backend (Railway + PostgreSQL)
 
-1. **Create a Railway project** and add a **PostgreSQL** database.
-2. **New Service** → Deploy from GitHub → Select this repo.
-3. Link the PostgreSQL service to your API service (Railway will inject `DATABASE_URL`).
-4. **Generate domain** in Settings → Networking.
-5. Optional: Add `OPENAI_API_KEY` and other vars in Variables.
+1. Create a Railway project and add PostgreSQL.
+2. New Service → Deploy from GitHub → Select this repo.
+3. Link PostgreSQL to the API service (`DATABASE_URL` auto-injected).
+4. Generate domain in Settings → Networking.
+5. Add `OPENAI_API_KEY` and other vars in Variables.
 
-The `railway.json` and `Dockerfile.api` are pre-configured. Railway auto-converts `postgresql://` to `postgresql+asyncpg://` for async SQLAlchemy. Migrations run automatically on deploy. To seed: run `python scripts/seed_db.py` once (connect to Railway DB or run locally with `DATABASE_URL` pointed at Railway).
+`railway.json` and `Dockerfile.api` are pre-configured. Migrations run on deploy. Run `python scripts/seed_db.py` once to seed.
