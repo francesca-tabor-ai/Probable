@@ -8,6 +8,7 @@ uvicorn[standard]>=0.27.0
 # Database
 sqlalchemy>=2.0.25
 asyncpg>=0.29.0
+psycopg2-binary>=2.9.9
 alembic>=1.13.0
 
 # Redis & Workers
@@ -24,8 +25,12 @@ beautifulsoup4>=4.12.0
 # LLM
 openai>=1.12.0
 
+# Auth
+passlib[bcrypt]>=1.7.4
+python-jose[cryptography]>=3.3.0
+
 # Config & Utilities
-pydantic>=2.6.0
+pydantic[email]>=2.6.0
 pydantic-settings>=2.1.0
 python-dotenv>=1.0.0
 

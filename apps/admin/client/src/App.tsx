@@ -13,6 +13,9 @@ import Articles from "@/pages/articles";
 import Stories from "@/pages/stories";
 import Forecasts from "@/pages/forecasts";
 import Agents from "@/pages/agents";
+import DataSources from "@/pages/data-sources";
+import Datasets from "@/pages/datasets";
+import Users from "@/pages/users";
 
 function Router() {
   return (
@@ -22,6 +25,9 @@ function Router() {
       <Route path="/articles" component={Articles}/>
       <Route path="/stories" component={Stories}/>
       <Route path="/forecasts" component={Forecasts}/>
+      <Route path="/data-sources" component={DataSources}/>
+      <Route path="/datasets" component={Datasets}/>
+      <Route path="/users" component={Users}/>
       <Route path="/agents" component={Agents}/>
       <Route component={NotFound} />
     </Switch>

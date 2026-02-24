@@ -19,6 +19,11 @@ class Settings(BaseSettings):
     app_name: str = "Probable.news"
     debug: bool = False
 
+    # Auth (JWT) — set SECRET_KEY in production (openssl rand -hex 32)
+    secret_key: str = "change-me-in-production-use-openssl-rand-hex-32"
+    algorithm: str = "HS256"
+    access_token_expire_minutes: int = 60 * 24 * 7  # 7 days
+
     # Database (Railway provides postgresql:// — we convert to postgresql+asyncpg for async)
     database_url: str = "postgresql+asyncpg://probable:probable@localhost:5432/probable"
 

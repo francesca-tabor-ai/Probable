@@ -63,7 +63,7 @@ npm install
 ## Apps
 
 - **`apps/frontend`** — Probable.news React product UI (forecast cards, charts). Run: `cd apps/frontend && npm install && npm run dev`
-- **`apps/admin`** — Admin dashboard for feeds, articles, stories, forecasts, agents. Run: `cd apps/admin && npm install && npm run dev`
+- **`apps/admin`** — Admin dashboard with full CRUD for feeds, articles, stories, forecasts, data sources, datasets, users. Run: `cd apps/admin && npm install && npm run dev` (requires API on port 8000; Vite proxies `/api` to backend)
 
 The root `npm run dev` serves the main marketing landing (static HTML). The API runs separately (`Dockerfile.api`).
 
@@ -87,6 +87,28 @@ Output goes to the `dist/` folder. Preview the production build with:
 npm run preview
 ```
 
+## Auth
+
+Sign up and log in via the API:
+
+- **POST /api/v1/auth/signup** — `{"email": "...", "password": "...", "full_name": "..."}`
+- **POST /api/v1/auth/login** — `{"email": "...", "password": "..."}` returns `{access_token, token_type}`
+- **GET /api/v1/auth/me** — requires `Authorization: Bearer <token>`
+
+Set `SECRET_KEY` in production (e.g. `openssl rand -hex 32`).
+
+## Database
+
+After creating the database (local or Railway), run migrations and seed:
+
+```bash
+# Run migrations
+alembic upgrade head
+
+# Seed sample data (idempotent)
+python scripts/seed_db.py
+```
+
 ## Deploy Backend (Railway + PostgreSQL)
 
 1. **Create a Railway project** and add a **PostgreSQL** database.
@@ -95,4 +117,4 @@ npm run preview
 4. **Generate domain** in Settings → Networking.
 5. Optional: Add `OPENAI_API_KEY` and other vars in Variables.
 
-The `railway.json` and `Dockerfile.api` are pre-configured. Railway auto-converts `postgresql://` to `postgresql+asyncpg://` for async SQLAlchemy.
+The `railway.json` and `Dockerfile.api` are pre-configured. Railway auto-converts `postgresql://` to `postgresql+asyncpg://` for async SQLAlchemy. Migrations run automatically on deploy. To seed: run `python scripts/seed_db.py` once (connect to Railway DB or run locally with `DATABASE_URL` pointed at Railway).

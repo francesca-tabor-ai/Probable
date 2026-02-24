@@ -5,6 +5,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from apps.api.routers import admin as admin_router
+from apps.api.routers import auth as auth_router
 from core.config import get_settings
 from core.db import engine
 
@@ -32,6 +34,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(auth_router.router, prefix="/api/v1")
+app.include_router(admin_router.router)
 
 
 @app.get("/health")

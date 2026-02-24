@@ -6,7 +6,9 @@ import {
   BookOpen, 
   TrendingUp, 
   Cpu,
-  Settings
+  Database,
+  Table2,
+  Users
 } from "lucide-react";
 import {
   Sidebar,
@@ -26,6 +28,9 @@ const mainNavItems = [
   { title: "Articles Queue", url: "/articles", icon: FileText },
   { title: "Stories", url: "/stories", icon: BookOpen },
   { title: "Forecasts", url: "/forecasts", icon: TrendingUp },
+  { title: "Data Sources", url: "/data-sources", icon: Database },
+  { title: "Datasets", url: "/datasets", icon: Table2 },
+  { title: "Users", url: "/users", icon: Users },
   { title: "Agents", url: "/agents", icon: Cpu },
 ];
 

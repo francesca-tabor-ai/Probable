@@ -37,4 +37,4 @@ class ForecastRun(Base):
     result: Mapped[dict] = mapped_column(JSON, default=dict)
     calibration_flags: Mapped[list] = mapped_column(JSON, default=list)
     run_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
-    metadata: Mapped[dict] = mapped_column(JSON, default=dict)
+    run_metadata: Mapped[dict] = mapped_column(JSON, default=dict)

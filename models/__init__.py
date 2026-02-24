@@ -2,12 +2,15 @@
 # Import all models so Base.metadata picks them up for Alembic
 
 from models.rss import RssItem
+from models.rss_feed import RssFeed
 from models.article import Article
 from models.dataset import Dataset, DataSource
 from models.forecast import ForecastSpecDB, ForecastRun
 from models.project import Project
+from models.user import User
 
 __all__ = [
+    "RssFeed",
     "RssItem",
     "Article",
     "Dataset",
@@ -15,4 +18,5 @@ __all__ = [
     "ForecastSpecDB",
     "ForecastRun",
     "Project",
+    "User",
 ]

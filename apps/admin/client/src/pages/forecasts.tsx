@@ -1,8 +1,10 @@
-import { useForecasts, useDeleteForecast } from "@/hooks/use-forecasts";
+import { useState } from "react";
+import { useForecasts, useCreateForecast, useDeleteForecast } from "@/hooks/use-forecasts";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { 
   Table, 
   TableBody, 
@@ -11,19 +13,81 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Trash2 } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Trash2, Plus } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Forecasts() {
   const { data: forecasts, isLoading } = useForecasts();
+  const createForecast = useCreateForecast();
   const deleteForecast = useDeleteForecast();
+  const { toast } = useToast();
+  const [open, setOpen] = useState(false);
+  const [form, setForm] = useState({ topic: "politics", target: "", probability: 50, horizon: "" });
+
+  const handleCreate = (e: React.FormEvent) => {
+    e.preventDefault();
+    createForecast.mutate({
+      topic: form.topic,
+      target: form.target,
+      probability: form.probability,
+      confidence: "medium",
+      modelType: "baseline",
+      horizon: form.horizon || undefined,
+    }, {
+      onSuccess: () => {
+        setOpen(false);
+        setForm({ topic: "politics", target: "", probability: 50, horizon: "" });
+        toast({ title: "Forecast created" });
+      },
+      onError: (err: Error) => toast({ title: "Error", description: err.message, variant: "destructive" }),
+    });
+  };
 
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto">
       <PageHeader 
         title="AI Forecasts" 
         description="Predictions and probabilities extracted and modeled from recent stories."
-      />
+      >
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button className="bg-gradient-to-r from-primary to-indigo-600 hover:opacity-90">
+              <Plus className="w-4 h-4 mr-2" /> Add Forecast
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <form onSubmit={handleCreate}>
+              <DialogHeader>
+                <DialogTitle>Add Forecast</DialogTitle>
+                <DialogDescription>Create a new forecast with target and probability.</DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="topic">Topic</Label>
+                  <Input id="topic" value={form.topic} onChange={(e) => setForm((f) => ({ ...f, topic: e.target.value }))} />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="target">Target Event</Label>
+                  <Input id="target" value={form.target} onChange={(e) => setForm((f) => ({ ...f, target: e.target.value }))} placeholder="e.g. Labour majority" required />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="probability">Probability (%)</Label>
+                  <Input id="probability" type="number" min={0} max={100} value={form.probability} onChange={(e) => setForm((f) => ({ ...f, probability: Number(e.target.value) }))} />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="horizon">Horizon</Label>
+                  <Input id="horizon" value={form.horizon} onChange={(e) => setForm((f) => ({ ...f, horizon: e.target.value }))} placeholder="e.g. 2025 election" />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="submit" disabled={createForecast.isPending}>{createForecast.isPending ? "Creating..." : "Create"}</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </PageHeader>
 
       <div className="bg-card rounded-xl border border-border/50 shadow-sm overflow-hidden">
         <Table>
