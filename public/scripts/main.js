@@ -36,4 +36,21 @@ document.addEventListener('DOMContentLoaded', () => {
       menuToggle.classList.toggle('is-active')
     })
   }
+
+  // Animate progress bar when product mockup enters view
+  const productMockup = document.querySelector('.product-mockup')
+  const mockupBar = document.querySelector('.mockup-bar-fill')
+  if (productMockup && mockupBar && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            mockupBar.style.width = '87%'
+          }
+        })
+      },
+      { threshold: 0.2 }
+    )
+    observer.observe(productMockup)
+  }
 })
