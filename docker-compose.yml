@@ -23,6 +23,24 @@ services:
     volumes:
       - .:/app
 
+  payments:
+    build:
+      context: .
+      dockerfile: Dockerfile.payments
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgresql://probable:probable@postgres:5432/probable
+      - REDIS_URL=redis://redis:6379/1
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET:-}
+      - PORT=3001
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
   worker:
     build:
       context: .

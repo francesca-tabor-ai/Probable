@@ -9,6 +9,8 @@ import {
   processedEvents,
 } from "../../../db/schema.js";
 import { eq, and } from "drizzle-orm";
+import { createSubscriptionLifecycleAgent } from "../../../agents/subscription-lifecycle/index.js";
+import { getDunningRuleForRetryCount } from "../../../config/dunning.js";
 
 export async function registerStripeWebhookRoutes(
   app: FastifyInstance,
@@ -16,6 +18,7 @@ export async function registerStripeWebhookRoutes(
     stripe: Stripe;
     db: Db;
     webhookSecret: string;
+    dunningQueue?: { add: (name: string, data: unknown, opts?: { delay?: number }) => Promise<unknown> };
   }
 ) {
   app.post(
@@ -25,16 +28,16 @@ export async function registerStripeWebhookRoutes(
         rawBody: true,
       },
     },
-    async (request: FastifyRequest<{ Body: Buffer | string }>, reply: FastifyReply) => {
+    async (request: FastifyRequest, reply: FastifyReply) => {
       const sig = request.headers["stripe-signature"];
       if (!sig || typeof sig !== "string") {
         return reply.status(400).send("Missing stripe-signature header");
       }
 
-      const rawBody =
-        typeof request.body === "string"
-          ? Buffer.from(request.body, "utf-8")
-          : (request.body as Buffer);
+      const rawBody = (request as unknown as { rawBody: Buffer }).rawBody;
+      if (!rawBody || !Buffer.isBuffer(rawBody)) {
+        return reply.status(400).send("Raw body required for webhook verification");
+      }
 
       let event: Stripe.Event;
       try {
@@ -78,10 +81,14 @@ export async function registerStripeWebhookRoutes(
           await handleSubscriptionEvent(deps.db, event.data.object as Stripe.Subscription);
           break;
         case "invoice.paid":
-          await handleInvoicePaid(deps.db, event.data.object as Stripe.Invoice);
+          await handleInvoicePaid(deps.stripe, deps.db, event.data.object as Stripe.Invoice);
           break;
         case "invoice.payment_failed":
-          await handleInvoicePaymentFailed(deps.db, event.data.object as Stripe.Invoice);
+          await handleInvoicePaymentFailed(
+            deps.db,
+            event.data.object as Stripe.Invoice,
+            deps.dunningQueue
+          );
           break;
         default:
           break;
@@ -178,7 +185,11 @@ function mapStripeStatusToInternal(
   }
 }
 
-async function handleInvoicePaid(db: Db, invoice: Stripe.Invoice) {
+async function handleInvoicePaid(
+  stripe: Stripe,
+  db: Db,
+  invoice: Stripe.Invoice
+) {
   const subId = typeof invoice.subscription === "string" ? invoice.subscription : invoice.subscription?.id;
   if (!subId) return;
 
@@ -199,14 +210,28 @@ async function handleInvoicePaid(db: Db, invoice: Stripe.Invoice) {
     currency,
     status: "succeeded",
     gateway: "stripe",
-    gatewayTxnId: invoice.payment_intent as string ?? invoice.id,
+    gatewayTxnId: (invoice.payment_intent as string) ?? invoice.id,
     gatewayEventId: invoice.id,
     subscriptionId: sub.id,
   });
+
+  const slmAgent = createSubscriptionLifecycleAgent(db, stripe);
+  await slmAgent.processSubscriptionEvent({
+    type: "payment_success",
+    subscriptionId: sub.id,
+    userId: sub.userId,
+  });
 }
 
-async function handleInvoicePaymentFailed(db: Db, invoice: Stripe.Invoice) {
-  const subId = typeof invoice.subscription === "string" ? invoice.subscription : invoice.subscription?.id;
+async function handleInvoicePaymentFailed(
+  db: Db,
+  invoice: Stripe.Invoice,
+  dunningQueue?: { add: (name: string, data: unknown, opts?: { delay?: number }) => Promise<unknown> }
+) {
+  const subId =
+    typeof invoice.subscription === "string"
+      ? invoice.subscription
+      : invoice.subscription?.id;
   if (!subId) return;
 
   const [sub] = await db
@@ -217,16 +242,29 @@ async function handleInvoicePaymentFailed(db: Db, invoice: Stripe.Invoice) {
 
   if (!sub) return;
 
-  const newCount = String(parseInt(sub.dunningRetryCount, 10) + 1);
+  const slmAgent = createSubscriptionLifecycleAgent(db, null as never);
+  const result = await slmAgent.processSubscriptionEvent({
+    type: "payment_failed",
+    subscriptionId: sub.id,
+    stripeSubscriptionId: subId,
+    userId: sub.userId,
+  });
 
-  await db
-    .update(subscriptions)
-    .set({
-      status: "past_due",
-      dunningRetryCount: newCount,
-      updatedAt: new Date(),
-    })
-    .where(eq(subscriptions.stripeSubscriptionId, subId));
+  if (result.dunningScheduled && result.dunningRetryCount != null && dunningQueue) {
+    const rule = getDunningRuleForRetryCount(result.dunningRetryCount);
+    if (rule) {
+      await dunningQueue.add(
+        "dunning-email",
+        {
+          subscriptionId: sub.id,
+          userId: sub.userId,
+          retryCount: result.dunningRetryCount,
+          emailTemplate: rule.emailTemplate,
+        },
+        { delay: rule.retryDay * 24 * 60 * 60 * 1000 }
+      );
+    }
+  }
 
   const amount = invoice.amount_due ?? 0;
   const currency = (invoice.currency ?? "usd").toLowerCase();
@@ -237,7 +275,7 @@ async function handleInvoicePaymentFailed(db: Db, invoice: Stripe.Invoice) {
     currency,
     status: "failed",
     gateway: "stripe",
-    gatewayTxnId: invoice.payment_intent as string ?? invoice.id,
+    gatewayTxnId: (invoice.payment_intent as string) ?? invoice.id,
     gatewayEventId: invoice.id,
     subscriptionId: sub.id,
   });

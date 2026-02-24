@@ -44,22 +44,24 @@ export async function createCheckoutSession(
     cancel_url: params.cancelUrl,
     customer_email: params.customerEmail ?? user.email,
     line_items: [
-      {
-        price: plan.stripePriceId ?? undefined,
-        quantity: 1,
-        price_data: plan.stripePriceId
-          ? undefined
-          : {
+      plan.stripePriceId
+        ? { price: plan.stripePriceId, quantity: 1 }
+        : {
+            price_data: {
               currency: (plan.currency as string) ?? "usd",
               unit_amount: Math.round(parseFloat(plan.price) * 100),
               recurring: {
-                interval: (plan.interval as "month" | "year") ?? "month",
+                interval:
+                  String(plan.interval).toLowerCase() === "annual"
+                    ? ("year" as const)
+                    : ("month" as const),
               },
               product_data: {
                 name: plan.name,
               },
             },
-      },
+            quantity: 1,
+          },
     ],
     subscription_data: {
       metadata: {

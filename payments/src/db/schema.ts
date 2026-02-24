@@ -171,6 +171,27 @@ export const contentCreatorAssignments = pgTable(
   ]
 );
 
+// Observability: agent decision log
+export const agentDecisionLog = pgTable(
+  "payment_agent_decision_log",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    agent: varchar("agent", { length: 10 }).notNull(),
+    entityId: varchar("entity_id", { length: 255 }).notNull(),
+    entityType: varchar("entity_type", { length: 50 }).notNull(),
+    trigger: varchar("trigger", { length: 100 }).notNull(),
+    payload: jsonb("payload").$type<Record<string, unknown>>(),
+    decision: jsonb("decision").$type<Record<string, unknown>>(),
+    explanation: text("explanation").notNull(),
+    timestamp: timestamp("timestamp").defaultNow().notNull(),
+  },
+  (table) => [
+    index("decision_log_agent_idx").on(table.agent),
+    index("decision_log_entity_idx").on(table.entityId),
+    index("decision_log_timestamp_idx").on(table.timestamp),
+  ]
+);
+
 // Idempotency: prevent duplicate webhook processing
 export const processedEvents = pgTable(
   "payment_processed_events",

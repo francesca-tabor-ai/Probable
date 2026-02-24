@@ -8,7 +8,7 @@ const CHAT_KNOWLEDGE = [
   },
   {
     keywords: ['who is it for', 'who is probable for', 'ideal customer', 'target audience', 'who should use'],
-    response: "Probable is built for ops leads, strategy teams, and finance leaders at growth-stage and mid-market companies (Series A–D). If you own revenue targets, resource planning, or product roadmaps—and operate in fast-changing environments—Probable helps you quantify uncertainty and communicate forecasts clearly to leadership and boards."
+    response: "Probable is built for:\n\n• Starter — Substack writers, independent analysts, small newsletters, research creators\n• Professional — Digital media companies, financial newsletters, research teams, intelligence platforms\n• Enterprise — Major publishers, hedge funds, government and policy organisations\n\nIf you need automated data journalism, probabilistic forecasting, or scalable insight generation, Probable helps you produce analysis at scale without hiring more analysts."
   },
   {
     keywords: ['how does it work', 'how does probable work', 'how it works', 'get started'],
@@ -28,23 +28,23 @@ const CHAT_KNOWLEDGE = [
   },
   {
     keywords: ['pricing', 'cost', 'price', 'how much', 'plans'],
-    response: "We offer three plans:\n\n• Individual — $29/month: Up to 3 forecast models, 1 data source, real-time updates, export to CSV & PDF\n• Team — $99/user/month (most popular): Unlimited models, 5 data sources, shared dashboards, Slack alerts, API, SSO\n• Enterprise — Custom: Everything in Team plus unlimited sources, dedicated success manager, on-premise, SLA\n\nEarly access and free trials don't require a credit card. Check our Pricing page for full details."
+    response: "We offer three plans:\n\n• Starter — £99/month: Up to 50 automated insights/month, core analysis, standard templates, 1 seat\n• Professional — £599/month (most popular): Up to 500 insights/month, forecast models, scenario simulations, 5 seats, CMS export\n• Enterprise — £3,000/month: Unlimited insights, custom models, full API, white-label, dedicated support\n\nPricing scales with your insight output. Check our Pricing page for full details."
   },
   {
-    keywords: ['individual', 'solo', 'analyst'],
-    response: "The Individual plan ($29/month) is for analysts and operators who need probabilistic forecasts. It includes up to 3 forecast models, 1 data source connection, real-time probability updates, and export to CSV & PDF. Great for getting started."
+    keywords: ['starter', 'individual', 'solo', 'analyst'],
+    response: "The Starter plan (£99/month) is for independent analysts, Substack writers, and small media teams. It includes up to 50 automated insights per month, core analysis and story generation, basic charts, standard topic templates (housing, inflation, elections), 1 user seat, and daily refresh. Replace hours of manual analysis for the cost of a single subscription."
   },
   {
-    keywords: ['team plan', 'team tier'],
-    response: "The Team plan ($99/user/month, billed annually, min. 3 seats) is our most popular. It includes unlimited forecast models, 5 data source connections, shared dashboards & scenarios, Slack & email alerts, API access, priority support, and optional SSO. Includes a 14-day free trial."
+    keywords: ['professional', 'team plan', 'team tier'],
+    response: "The Professional plan (£599/month) is our most popular. It's for digital media companies, financial newsletters, and research teams. You get up to 500 automated insights per month, forecast models, scenario simulations, custom topics, 5 seats, export to CMS, priority processing, and priority support. Scale your newsroom's data journalism without hiring analysts."
   },
   {
     keywords: ['enterprise', 'custom'],
-    response: "The Enterprise plan is custom-built for finance and leadership at scale. It includes everything in Team plus unlimited data sources, a dedicated success manager, custom integrations, on-premise deployment, SLA & compliance support, training, and volume discounts. Contact sales for pricing."
+    response: "The Enterprise plan (£3,000/month, annual from £30k) is for major publishers, financial institutions, and intelligence platforms. It includes unlimited insight generation, custom forecast models, full API access, white-label publishing, dedicated infrastructure, SLA guarantees, dedicated support, and custom dataset integration. Run a fully autonomous data journalism desk."
   },
   {
     keywords: ['free trial', 'trial'],
-    response: "Team and Enterprise plans include a 14-day free trial. No credit card required. You can also get early access from our homepage—enter your email and we'll be in touch."
+    response: "Professional and Enterprise plans include a 14-day free trial. No credit card required. You can also get early access from our homepage—enter your email and we'll be in touch."
   },
   {
     keywords: ['data', 'connect', 'integrate', 'sources'],
@@ -52,7 +52,7 @@ const CHAT_KNOWLEDGE = [
   },
   {
     keywords: ['roi', 'results', 'benefits', 'outcomes', 'value'],
-    response: "Teams using Probable typically see:\n\n• Faster decisions — Probabilistic estimates reduce back-and-forth and 'what-if' paralysis\n• Fewer surprises — Understanding best and worst case helps you plan contingencies\n• More credible forecasts — Confidence intervals give leadership and investors a clear view of risk\n• Time back — Real-time updates keep forecasts current; less manual re-forecasting\n\nThe ROI comes from better resource allocation, fewer costly misses, and faster cycle times—often paying back within a single planning cycle."
+    response: "Probable delivers clear ROI for data journalism and forecasting:\n\n• Replace manual analysis — Starter costs £99/month vs hours of analyst time\n• Scale without hiring — Professional (£599/month) lets you run 500 insights/month without new headcount\n• Enterprise efficiency — A human analyst costs £60k–£120k/year; Probable Enterprise is £36k/year\n\nFaster decisions, fewer surprises, and credible forecasts that pay back within a single planning cycle."
   },
   {
     keywords: ['case stud', 'example', 'customer', 'success'],
