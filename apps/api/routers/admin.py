@@ -629,6 +629,7 @@ async def users_delete(id: int, db: DbSession):
 
 
 @router.get("/agents")
+async def agents_list():
     """List agents (placeholder - returns empty)."""
     return []
 

@@ -63,7 +63,7 @@ npm install
 ## Apps
 
 - **`apps/frontend`** — Probable.news React product UI (forecast cards, charts). Run: `cd apps/frontend && npm install && npm run dev`
-- **`apps/admin`** — Admin dashboard with full CRUD for feeds, articles, stories, forecasts, data sources, datasets, users. Run: `cd apps/admin && npm install && npm run dev` (requires API on port 8000; Vite proxies `/api` to backend)
+- **`apps/admin`** — Admin dashboard with full CRUD for feeds, articles, stories, forecasts, data sources, datasets, users, and **Integrations** (App Marketplace). Run: `cd apps/admin && npm install && npm run dev` (requires API on port 8000; Vite proxies `/api` to backend)
 
 The root `npm run dev` serves the main marketing landing (static HTML). The API runs separately (`Dockerfile.api`).
 
@@ -105,9 +105,19 @@ After creating the database (local or Railway), run migrations and seed:
 # Run migrations
 alembic upgrade head
 
-# Seed sample data (idempotent)
+# Seed sample data (idempotent) — includes marketplace apps
 python scripts/seed_db.py
 ```
+
+## App Marketplace
+
+The **Integrations** page in the admin dashboard lets users connect apps (Slack, Google Sheets, Zapier, etc.) for advanced probabilistic workflows. Marketplace apps are seeded by `seed_db.py`. API endpoints:
+
+- `GET /api/marketplace/apps` — List apps (public)
+- `GET /api/marketplace/apps/{slug}` — Get app by slug
+- `GET /api/marketplace/integrations` — List user's connected apps (auth required)
+- `POST /api/marketplace/integrations` — Connect an app (auth required)
+- `DELETE /api/marketplace/integrations/{id}` — Disconnect (auth required)
 
 ## Deploy Backend (Railway + PostgreSQL)
 

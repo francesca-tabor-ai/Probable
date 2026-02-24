@@ -14,6 +14,7 @@ from core.config import get_settings
 from core.db import async_session_maker
 from core.auth import get_password_hash
 from models.article import Article
+from models.marketplace import MarketplaceApp
 from models.rss_feed import RssFeed
 from models.user import User
 from models.dataset import DataSource, Dataset
@@ -182,6 +183,185 @@ async def seed_sample_forecast(session, project_id: int | None) -> int:
     return 1
 
 
+MARKETPLACE_APPS = [
+    {
+        "slug": "google-sheets",
+        "name": "Google Sheets",
+        "description": "Import forecasts and probability distributions directly from Sheets. Auto-sync your spreadsheets as data sources.",
+        "category": "data",
+        "icon": "G",
+        "sort_order": 1,
+        "workflows": [
+            {"id": "sync-in", "name": "Sync data in", "description": "Pull spreadsheet data as forecast inputs"},
+            {"id": "sync-out", "name": "Export forecasts", "description": "Push probability outputs to a sheet"},
+        ],
+        "config_schema": {"type": "oauth", "scopes": ["spreadsheets"]},
+    },
+    {
+        "slug": "bigquery",
+        "name": "BigQuery",
+        "description": "Query your data warehouse in real time. Run probabilistic models on BigQuery datasets and push results back.",
+        "category": "data",
+        "icon": "BQ",
+        "sort_order": 2,
+        "workflows": [
+            {"id": "query-forecast", "name": "Forecast on query", "description": "Run forecasts on BigQuery table data"},
+            {"id": "write-results", "name": "Write results", "description": "Export forecast distributions to BigQuery"},
+        ],
+        "config_schema": {"type": "service_account"},
+    },
+    {
+        "slug": "snowflake",
+        "name": "Snowflake",
+        "description": "Connect to Snowflake for enterprise data. Pull time-series data for forecasting and write probability outputs.",
+        "category": "data",
+        "icon": "S",
+        "sort_order": 3,
+        "workflows": [
+            {"id": "ingest", "name": "Ingest time series", "description": "Use Snowflake tables as forecast inputs"},
+        ],
+        "config_schema": {"type": "credentials"},
+    },
+    {
+        "slug": "airtable",
+        "name": "Airtable",
+        "description": "Sync Airtable bases as forecast inputs. Map bases to datasets and keep your no-code workflows in sync.",
+        "category": "data",
+        "icon": "A",
+        "sort_order": 4,
+        "workflows": [
+            {"id": "base-sync", "name": "Base sync", "description": "Sync a base as a dataset source"},
+        ],
+        "config_schema": {"type": "oauth"},
+    },
+    {
+        "slug": "slack",
+        "name": "Slack",
+        "description": "Send forecast alerts and probability updates to channels. Get notified when confidence drops below thresholds.",
+        "category": "communication",
+        "icon": "S",
+        "sort_order": 10,
+        "workflows": [
+            {"id": "alerts", "name": "Forecast alerts", "description": "Post to channel when forecasts cross thresholds"},
+            {"id": "digest", "name": "Daily digest", "description": "Daily summary of key probabilities"},
+        ],
+        "config_schema": {"type": "oauth", "fields": [{"key": "channel_id", "label": "Default channel"}]},
+    },
+    {
+        "slug": "microsoft-teams",
+        "name": "Microsoft Teams",
+        "description": "Post forecast summaries and risk updates to Teams. Share probabilistic dashboards with your org.",
+        "category": "communication",
+        "icon": "M",
+        "sort_order": 11,
+        "workflows": [
+            {"id": "teams-post", "name": "Post to channel", "description": "Share forecast cards in Teams"},
+        ],
+        "config_schema": {"type": "webhook", "fields": [{"key": "webhook_url", "label": "Incoming webhook URL"}]},
+    },
+    {
+        "slug": "zapier",
+        "name": "Zapier",
+        "description": "Trigger forecasts from any Zapier event. Send probability outputs to 5,000+ apps. Build chains without code.",
+        "category": "automation",
+        "icon": "Z",
+        "sort_order": 20,
+        "workflows": [
+            {"id": "trigger", "name": "Trigger on event", "description": "Run forecast when Zapier detects an event"},
+            {"id": "action", "name": "Zapier action", "description": "Send forecast to any Zapier app"},
+        ],
+        "config_schema": {"type": "api_key"},
+    },
+    {
+        "slug": "make",
+        "name": "Make",
+        "description": "Use Probable in Make scenarios. Run forecasts on schedule, transform outputs, and automate downstream workflows.",
+        "category": "automation",
+        "icon": "M",
+        "sort_order": 21,
+        "workflows": [
+            {"id": "scheduled", "name": "Scheduled forecast", "description": "Run forecast on a schedule"},
+            {"id": "webhook", "name": "Webhook trigger", "description": "Trigger from Make webhook"},
+        ],
+        "config_schema": {"type": "api_key"},
+    },
+    {
+        "slug": "n8n",
+        "name": "n8n",
+        "description": "Self-hosted automation. Connect Probable to n8n workflows for custom pipelines and on-premise integrations.",
+        "category": "automation",
+        "icon": "n",
+        "sort_order": 22,
+        "workflows": [
+            {"id": "n8n-node", "name": "n8n node", "description": "Probable node in your workflow"},
+        ],
+        "config_schema": {"type": "api_key"},
+    },
+    {
+        "slug": "looker",
+        "name": "Looker",
+        "description": "Embed probability dashboards in Looker. Combine Probable forecasts with your existing BI reports.",
+        "category": "bi",
+        "icon": "L",
+        "sort_order": 30,
+        "workflows": [
+            {"id": "embed", "name": "Embed dashboard", "description": "Embed Probable viz in Looker"},
+        ],
+        "config_schema": {"type": "sso"},
+    },
+    {
+        "slug": "tableau",
+        "name": "Tableau",
+        "description": "Export forecast distributions to Tableau. Visualise confidence intervals and scenario analyses in your dashboards.",
+        "category": "bi",
+        "icon": "T",
+        "sort_order": 31,
+        "workflows": [
+            {"id": "export", "name": "Export to Tableau", "description": "Push probability data to Tableau"},
+        ],
+        "config_schema": {"type": "api_key"},
+    },
+    {
+        "slug": "power-bi",
+        "name": "Power BI",
+        "description": "Push probabilistic metrics to Power BI. Build reports that show full outcome distributions, not just point estimates.",
+        "category": "bi",
+        "icon": "P",
+        "sort_order": 32,
+        "workflows": [
+            {"id": "powerbi-push", "name": "Push to Power BI", "description": "Stream forecast data to Power BI"},
+        ],
+        "config_schema": {"type": "api_key"},
+    },
+]
+
+
+async def seed_marketplace_apps(session) -> int:
+    """Seed marketplace apps. Idempotent."""
+    count = 0
+    for app_data in MARKETPLACE_APPS:
+        existing = await session.execute(
+            select(MarketplaceApp).where(MarketplaceApp.slug == app_data["slug"])
+        )
+        if existing.scalar_one_or_none() is not None:
+            continue
+        session.add(
+            MarketplaceApp(
+                slug=app_data["slug"],
+                name=app_data["name"],
+                description=app_data["description"],
+                category=app_data["category"],
+                icon=app_data["icon"],
+                sort_order=app_data["sort_order"],
+                workflows=app_data["workflows"],
+                config_schema=app_data["config_schema"],
+                is_active=True,
+            )
+        )
+        count += 1
+    return count
+
+
 async def seed_sample_dataset(session, article_id: int | None) -> int:
     """Seed a sample dataset."""
     existing = await session.execute(
@@ -229,6 +409,9 @@ async def run_seed():
 
             n_d = await seed_sample_dataset(session, art_id)
             print(f"  Dataset: {n_d} added")
+
+            n_m = await seed_marketplace_apps(session)
+            print(f"  Marketplace apps: {n_m} added")
 
             await session.commit()
             print("Seed complete.")

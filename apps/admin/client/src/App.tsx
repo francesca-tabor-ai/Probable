@@ -15,6 +15,7 @@ import Forecasts from "@/pages/forecasts";
 import Agents from "@/pages/agents";
 import DataSources from "@/pages/data-sources";
 import Datasets from "@/pages/datasets";
+import Integrations from "@/pages/integrations";
 import Users from "@/pages/users";
 
 function Router() {
@@ -27,6 +28,7 @@ function Router() {
       <Route path="/forecasts" component={Forecasts}/>
       <Route path="/data-sources" component={DataSources}/>
       <Route path="/datasets" component={Datasets}/>
+      <Route path="/integrations" component={Integrations}/>
       <Route path="/users" component={Users}/>
       <Route path="/agents" component={Agents}/>
       <Route component={NotFound} />

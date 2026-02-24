@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from apps.api.routers import admin as admin_router
 from apps.api.routers import auth as auth_router
+from apps.api.routers import marketplace as marketplace_router
 from core.config import get_settings
 from core.db import engine
 
@@ -37,6 +38,7 @@ app.add_middleware(
 
 app.include_router(auth_router.router, prefix="/api/v1")
 app.include_router(admin_router.router)
+app.include_router(marketplace_router.router)
 
 
 @app.get("/health")

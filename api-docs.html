@@ -59,6 +59,11 @@
         <p class="hero-subtitle">
           Entities, endpoints, and CRUD operations for the Probable forecasting and data journalism platform.
         </p>
+        <nav class="hero-nav" style="margin-top: var(--space-xl); display: flex; flex-wrap: wrap; gap: var(--space-md); justify-content: center;">
+          <a href="#entities" style="padding: var(--space-sm) var(--space-lg); background: var(--color-surface); border-radius: var(--radius-md); font-weight: 600; font-size: 0.875rem; text-decoration: none; color: var(--color-text);">Entities</a>
+          <a href="#crud-summary" style="padding: var(--space-sm) var(--space-lg); background: var(--color-surface); border-radius: var(--radius-md); font-weight: 600; font-size: 0.875rem; text-decoration: none; color: var(--color-text);">CRUD Summary</a>
+          <a href="#endpoints" style="padding: var(--space-sm) var(--space-lg); background: var(--color-surface); border-radius: var(--radius-md); font-weight: 600; font-size: 0.875rem; text-decoration: none; color: var(--color-text);">Endpoints</a>
+        </nav>
       </section>
 
       <div class="api-docs">
@@ -153,6 +158,24 @@
           </div>
 
           <div class="entity-card">
+            <div class="entity-name">RssFeed</div>
+            <p class="entity-desc">RSS feed configuration for ingestion (admin "feeds").</p>
+            <table>
+              <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>id</td><td>int</td><td>Primary key</td></tr>
+                <tr><td>name</td><td>string</td><td>Feed name</td></tr>
+                <tr><td>url</td><td>string</td><td>RSS feed URL</td></tr>
+                <tr><td>category</td><td>string</td><td>Category tag</td></tr>
+                <tr><td>status</td><td>string</td><td>active | inactive</td></tr>
+                <tr><td>articles_count</td><td>int</td><td>Count of articles</td></tr>
+                <tr><td>last_fetched_at</td><td>datetime?</td><td>Last fetch time</td></tr>
+                <tr><td>created_at</td><td>datetime</td><td>Creation timestamp</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="entity-card">
             <div class="entity-name">DataSource</div>
             <p class="entity-desc">Configuration for external data sources per topic.</p>
             <table>
@@ -202,64 +225,107 @@
               </tbody>
             </table>
           </div>
+
+          <div class="entity-card">
+            <div class="entity-name">User</div>
+            <p class="entity-desc">User account for authentication and authorization.</p>
+            <table>
+              <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>id</td><td>int</td><td>Primary key</td></tr>
+                <tr><td>email</td><td>string</td><td>Unique email</td></tr>
+                <tr><td>full_name</td><td>string?</td><td>Display name</td></tr>
+                <tr><td>is_active</td><td>bool</td><td>Account enabled</td></tr>
+                <tr><td>created_at</td><td>datetime</td><td>Creation timestamp</td></tr>
+                <tr><td>updated_at</td><td>datetime</td><td>Last update</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="crud-summary">
+          <h2>CRUD Summary</h2>
+          <p class="section-desc" style="color: var(--color-text-muted); margin-bottom: var(--space-xl);">Quick reference: which operations each entity supports.</p>
+          <table>
+            <thead><tr><th>Entity</th><th>Create</th><th>Read</th><th>Update</th><th>Delete</th></tr></thead>
+            <tbody>
+              <tr><td>RssFeed</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+              <tr><td>Article</td><td>—</td><td>✓</td><td>✓</td><td>✓</td></tr>
+              <tr><td>Story (Project)</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+              <tr><td>Forecast</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+              <tr><td>Data Source</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+              <tr><td>Dataset</td><td>—</td><td>✓</td><td>—</td><td>✓</td></tr>
+              <tr><td>User</td><td>via /auth/signup</td><td>✓</td><td>✓</td><td>✓</td></tr>
+              <tr><td>Agent</td><td>—</td><td>✓</td><td>✓</td><td>—</td></tr>
+            </tbody>
+          </table>
         </section>
 
         <section id="endpoints">
           <h2>API Endpoints</h2>
-          <p class="section-desc" style="color: var(--color-text-muted); margin-bottom: var(--space-xl);">REST endpoints with full CRUD where applicable. Base URL: your API host (e.g. <code style="background: var(--color-surface); padding: 2px 6px; border-radius: 4px;">http://localhost:8000</code>)</p>
+          <p class="section-desc" style="color: var(--color-text-muted); margin-bottom: var(--space-xl);">REST endpoints with full CRUD where applicable. Base URL: <code style="background: var(--color-surface); padding: 2px 6px; border-radius: 4px;">http://localhost:8000</code></p>
 
           <h3>System</h3>
           <div class="endpoint-row"><span class="method get">GET</span><span class="path">/health</span><span style="color: var(--color-text-muted);">— Health check</span></div>
 
-          <h3>Projects</h3>
-          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/projects</span><span style="color: var(--color-text-muted);">— List projects</span></div>
-          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/projects/{id}</span><span style="color: var(--color-text-muted);">— Get project by ID</span></div>
-          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/projects/slug/{slug}</span><span style="color: var(--color-text-muted);">— Get project by slug</span></div>
-          <div class="endpoint-row"><span class="method post">POST</span><span class="path">/projects</span><span style="color: var(--color-text-muted);">— Create project</span></div>
-          <div class="endpoint-row"><span class="method put">PUT</span><span class="path">/projects/{id}</span><span style="color: var(--color-text-muted);">— Update project</span></div>
-          <div class="endpoint-row"><span class="method delete">DELETE</span><span class="path">/projects/{id}</span><span style="color: var(--color-text-muted);">— Delete project</span></div>
+          <h3>Auth (<code>/api/v1/auth</code>)</h3>
+          <div class="endpoint-row"><span class="method post">POST</span><span class="path">/api/v1/auth/signup</span><span style="color: var(--color-text-muted);">— Create user account</span></div>
+          <div class="endpoint-row"><span class="method post">POST</span><span class="path">/api/v1/auth/login</span><span style="color: var(--color-text-muted);">— Login (returns JWT)</span></div>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/api/v1/auth/me</span><span style="color: var(--color-text-muted);">— Current user (Bearer required)</span></div>
+
+          <h3>Dashboard</h3>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/api/dashboard/stats</span><span style="color: var(--color-text-muted);">— Aggregate stats</span></div>
+
+          <h3>Feeds (RssFeed)</h3>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/api/feeds</span><span style="color: var(--color-text-muted);">— List feeds</span></div>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/api/feeds/{id}</span><span style="color: var(--color-text-muted);">— Get feed</span></div>
+          <div class="endpoint-row"><span class="method post">POST</span><span class="path">/api/feeds</span><span style="color: var(--color-text-muted);">— Create feed</span></div>
+          <div class="endpoint-row"><span class="method put">PUT</span><span class="path">/api/feeds/{id}</span><span style="color: var(--color-text-muted);">— Update feed</span></div>
+          <div class="endpoint-row"><span class="method delete">DELETE</span><span class="path">/api/feeds/{id}</span><span style="color: var(--color-text-muted);">— Delete feed</span></div>
 
           <h3>Articles</h3>
-          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/articles</span><span style="color: var(--color-text-muted);">— List articles</span></div>
-          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/articles/{id}</span><span style="color: var(--color-text-muted);">— Get article</span></div>
-          <div class="endpoint-row"><span class="method post">POST</span><span class="path">/articles</span><span style="color: var(--color-text-muted);">— Create article</span></div>
-          <div class="endpoint-row"><span class="method put">PUT</span><span class="path">/articles/{id}</span><span style="color: var(--color-text-muted);">— Update article</span></div>
-          <div class="endpoint-row"><span class="method delete">DELETE</span><span class="path">/articles/{id}</span><span style="color: var(--color-text-muted);">— Delete article</span></div>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/api/articles</span><span style="color: var(--color-text-muted);">— List articles</span></div>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/api/articles/{id}</span><span style="color: var(--color-text-muted);">— Get article</span></div>
+          <div class="endpoint-row"><span class="method put">PUT</span><span class="path">/api/articles/{id}</span><span style="color: var(--color-text-muted);">— Update article</span></div>
+          <div class="endpoint-row"><span class="method delete">DELETE</span><span class="path">/api/articles/{id}</span><span style="color: var(--color-text-muted);">— Delete article</span></div>
 
-          <h3>RSS Items</h3>
-          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/rss-items</span><span style="color: var(--color-text-muted);">— List RSS items</span></div>
-          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/rss-items/{id}</span><span style="color: var(--color-text-muted);">— Get RSS item</span></div>
-          <div class="endpoint-row"><span class="method post">POST</span><span class="path">/rss-items</span><span style="color: var(--color-text-muted);">— Create RSS item</span></div>
-          <div class="endpoint-row"><span class="method put">PUT</span><span class="path">/rss-items/{id}</span><span style="color: var(--color-text-muted);">— Update RSS item</span></div>
-          <div class="endpoint-row"><span class="method delete">DELETE</span><span class="path">/rss-items/{id}</span><span style="color: var(--color-text-muted);">— Delete RSS item</span></div>
+          <h3>Stories (Projects)</h3>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/api/stories</span><span style="color: var(--color-text-muted);">— List stories</span></div>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/api/stories/{id}</span><span style="color: var(--color-text-muted);">— Get story</span></div>
+          <div class="endpoint-row"><span class="method post">POST</span><span class="path">/api/stories</span><span style="color: var(--color-text-muted);">— Create story</span></div>
+          <div class="endpoint-row"><span class="method put">PUT</span><span class="path">/api/stories/{id}</span><span style="color: var(--color-text-muted);">— Update story</span></div>
+          <div class="endpoint-row"><span class="method patch">PATCH</span><span class="path">/api/stories/{id}/publish</span><span style="color: var(--color-text-muted);">— Publish story</span></div>
+          <div class="endpoint-row"><span class="method delete">DELETE</span><span class="path">/api/stories/{id}</span><span style="color: var(--color-text-muted);">— Delete story</span></div>
 
-          <h3>Datasets</h3>
-          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/datasets</span><span style="color: var(--color-text-muted);">— List datasets</span></div>
-          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/datasets/{id}</span><span style="color: var(--color-text-muted);">— Get dataset</span></div>
-          <div class="endpoint-row"><span class="method post">POST</span><span class="path">/datasets</span><span style="color: var(--color-text-muted);">— Create dataset</span></div>
-          <div class="endpoint-row"><span class="method put">PUT</span><span class="path">/datasets/{id}</span><span style="color: var(--color-text-muted);">— Update dataset</span></div>
-          <div class="endpoint-row"><span class="method delete">DELETE</span><span class="path">/datasets/{id}</span><span style="color: var(--color-text-muted);">— Delete dataset</span></div>
+          <h3>Forecasts</h3>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/api/forecasts</span><span style="color: var(--color-text-muted);">— List forecasts</span></div>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/api/forecasts/{id}</span><span style="color: var(--color-text-muted);">— Get forecast</span></div>
+          <div class="endpoint-row"><span class="method post">POST</span><span class="path">/api/forecasts</span><span style="color: var(--color-text-muted);">— Create forecast</span></div>
+          <div class="endpoint-row"><span class="method put">PUT</span><span class="path">/api/forecasts/{id}</span><span style="color: var(--color-text-muted);">— Update forecast</span></div>
+          <div class="endpoint-row"><span class="method delete">DELETE</span><span class="path">/api/forecasts/{id}</span><span style="color: var(--color-text-muted);">— Delete forecast</span></div>
 
           <h3>Data Sources</h3>
-          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/data-sources</span><span style="color: var(--color-text-muted);">— List data sources</span></div>
-          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/data-sources/{id}</span><span style="color: var(--color-text-muted);">— Get data source</span></div>
-          <div class="endpoint-row"><span class="method post">POST</span><span class="path">/data-sources</span><span style="color: var(--color-text-muted);">— Create data source</span></div>
-          <div class="endpoint-row"><span class="method put">PUT</span><span class="path">/data-sources/{id}</span><span style="color: var(--color-text-muted);">— Update data source</span></div>
-          <div class="endpoint-row"><span class="method delete">DELETE</span><span class="path">/data-sources/{id}</span><span style="color: var(--color-text-muted);">— Delete data source</span></div>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/api/data-sources</span><span style="color: var(--color-text-muted);">— List data sources</span></div>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/api/data-sources/{id}</span><span style="color: var(--color-text-muted);">— Get data source</span></div>
+          <div class="endpoint-row"><span class="method post">POST</span><span class="path">/api/data-sources</span><span style="color: var(--color-text-muted);">— Create data source</span></div>
+          <div class="endpoint-row"><span class="method put">PUT</span><span class="path">/api/data-sources/{id}</span><span style="color: var(--color-text-muted);">— Update data source</span></div>
+          <div class="endpoint-row"><span class="method delete">DELETE</span><span class="path">/api/data-sources/{id}</span><span style="color: var(--color-text-muted);">— Delete data source</span></div>
 
-          <h3>Forecast Specs</h3>
-          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/forecast-specs</span><span style="color: var(--color-text-muted);">— List forecast specs</span></div>
-          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/forecast-specs/{id}</span><span style="color: var(--color-text-muted);">— Get forecast spec</span></div>
-          <div class="endpoint-row"><span class="method post">POST</span><span class="path">/forecast-specs</span><span style="color: var(--color-text-muted);">— Create forecast spec</span></div>
-          <div class="endpoint-row"><span class="method put">PUT</span><span class="path">/forecast-specs/{id}</span><span style="color: var(--color-text-muted);">— Update forecast spec</span></div>
-          <div class="endpoint-row"><span class="method delete">DELETE</span><span class="path">/forecast-specs/{id}</span><span style="color: var(--color-text-muted);">— Delete forecast spec</span></div>
+          <h3>Datasets</h3>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/api/datasets</span><span style="color: var(--color-text-muted);">— List datasets</span></div>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/api/datasets/{id}</span><span style="color: var(--color-text-muted);">— Get dataset</span></div>
+          <div class="endpoint-row"><span class="method delete">DELETE</span><span class="path">/api/datasets/{id}</span><span style="color: var(--color-text-muted);">— Delete dataset</span></div>
 
-          <h3>Forecast Runs</h3>
-          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/forecast-runs</span><span style="color: var(--color-text-muted);">— List forecast runs</span></div>
-          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/forecast-runs/{id}</span><span style="color: var(--color-text-muted);">— Get forecast run</span></div>
-          <div class="endpoint-row"><span class="method post">POST</span><span class="path">/forecast-runs</span><span style="color: var(--color-text-muted);">— Create forecast run</span></div>
-          <div class="endpoint-row"><span class="method put">PUT</span><span class="path">/forecast-runs/{id}</span><span style="color: var(--color-text-muted);">— Update forecast run</span></div>
-          <div class="endpoint-row"><span class="method delete">DELETE</span><span class="path">/forecast-runs/{id}</span><span style="color: var(--color-text-muted);">— Delete forecast run</span></div>
+          <h3>Users</h3>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/api/users</span><span style="color: var(--color-text-muted);">— List users</span></div>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/api/users/{id}</span><span style="color: var(--color-text-muted);">— Get user</span></div>
+          <div class="endpoint-row"><span class="method put">PUT</span><span class="path">/api/users/{id}</span><span style="color: var(--color-text-muted);">— Update user</span></div>
+          <div class="endpoint-row"><span class="method delete">DELETE</span><span class="path">/api/users/{id}</span><span style="color: var(--color-text-muted);">— Delete user</span></div>
+
+          <h3>Agents</h3>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/api/agents</span><span style="color: var(--color-text-muted);">— List agents (placeholder)</span></div>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/api/agents/{id}</span><span style="color: var(--color-text-muted);">— Get agent (placeholder)</span></div>
+          <div class="endpoint-row"><span class="method put">PUT</span><span class="path">/api/agents/{id}</span><span style="color: var(--color-text-muted);">— Update agent (placeholder)</span></div>
 
           <a href="http://localhost:8000/docs" target="_blank" rel="noopener" class="interactive-link">
             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>

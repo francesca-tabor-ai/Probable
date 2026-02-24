@@ -380,7 +380,7 @@ const Footer = () => (
         <ul className="text-[13px] font-semibold space-y-4 text-muted">
           <li><a href="#" className="hover:text-ink transition-colors">About</a></li>
           <li><a href="#" className="hover:text-ink transition-colors">Methodology</a></li>
-          <li><a href="#" className="hover:text-ink transition-colors">API Docs</a></li>
+          <li><a href="/api-docs.html" className="hover:text-ink transition-colors">API Docs</a></li>
           <li><a href="#" className="hover:text-ink transition-colors">Careers</a></li>
         </ul>
       </div>

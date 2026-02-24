@@ -11,32 +11,66 @@
     <link rel="stylesheet" href="/styles/main.css" />
     <style>
       .build-app { max-width: 1100px; margin: 0 auto; padding: 0 var(--space-xl) var(--space-5xl); }
-      .build-app-grid { display: grid; grid-template-columns: 1fr 340px; gap: var(--space-3xl); align-items: start; }
-      @media (max-width: 900px) { .build-app-grid { grid-template-columns: 1fr; } }
-      .app-form-section { margin-bottom: var(--space-2xl); }
-      .app-form-section h3 { font-size: 1rem; font-weight: 600; color: var(--color-text); margin-bottom: var(--space-lg); padding-bottom: var(--space-sm); border-bottom: 1px solid var(--color-divider); }
+      .build-app-layout { display: grid; grid-template-columns: 200px 1fr; gap: var(--space-3xl); align-items: start; }
+      @media (max-width: 900px) {
+        .build-app-layout { grid-template-columns: 1fr; }
+        .build-app-steps { position: static; display: flex; flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-xl); padding-bottom: var(--space-lg); border-bottom: 1px solid var(--color-divider); }
+        .build-app-steps-list { display: flex; flex-wrap: wrap; gap: var(--space-sm); list-style: none; padding: 0; margin: 0; }
+        .build-app-steps-list li { flex: 0 0 auto; padding: var(--space-xs) var(--space-sm); border-radius: var(--radius-md); border-left: none; margin-left: 0; }
+        .build-app-steps-list li.active { background: var(--gradient-accent-subtle); }
+        .build-app-steps-list li.completed::before { display: none; }
+        .build-app-sidebar-card { display: none; }
+      }
+      .build-app-steps { position: sticky; top: 100px; }
+      .build-app-steps-list { list-style: none; }
+      .build-app-steps-list li { display: flex; align-items: center; gap: var(--space-sm); padding: var(--space-sm) 0; font-size: 0.875rem; color: var(--color-text-muted); cursor: pointer; transition: color var(--transition); border-left: 2px solid transparent; padding-left: var(--space-md); margin-left: 8px; }
+      .build-app-steps-list li:hover { color: var(--color-text-secondary); }
+      .build-app-steps-list li.active { color: var(--color-accent-solid); font-weight: 600; border-left-color: var(--color-accent-solid); }
+      .build-app-steps-list li.completed { color: var(--color-text-secondary); }
+      .build-app-steps-list li.completed::before { content: '✓'; display: inline-block; width: 18px; height: 18px; background: var(--color-accent-solid); color: white; border-radius: 50%; font-size: 0.7rem; line-height: 18px; text-align: center; flex-shrink: 0; }
+      .build-app-steps-list li .step-num { width: 20px; height: 20px; border-radius: 50%; background: var(--color-surface); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; flex-shrink: 0; }
+      .build-app-steps-list li.active .step-num { background: var(--gradient-accent-subtle); border-color: var(--color-accent-solid); color: var(--color-accent-solid); }
+      .build-app-progress { height: 4px; background: var(--color-divider); border-radius: var(--radius-full); margin-bottom: var(--space-2xl); overflow: hidden; }
+      .build-app-progress-fill { height: 100%; background: var(--gradient-accent); border-radius: var(--radius-full); transition: width 0.3s ease; }
+      .app-form-wrapper { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-2xl); }
+      .app-form-section { display: none; }
+      .app-form-section.active { display: block; animation: fadeIn 0.25s ease; }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      .app-form-section h3 { font-size: 1.125rem; font-weight: 600; color: var(--color-text); margin-bottom: var(--space-sm); }
+      .app-form-section .section-desc { font-size: 0.875rem; color: var(--color-text-muted); margin-bottom: var(--space-lg); }
       .app-form .contact-field { margin-bottom: var(--space-lg); }
       .app-form .contact-field:last-of-type { margin-bottom: 0; }
       .app-form .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); }
       @media (max-width: 600px) { .app-form .form-row { grid-template-columns: 1fr; } }
+      .app-form label { display: block; font-size: 0.875rem; font-weight: 500; color: var(--color-text); margin-bottom: var(--space-xs); }
+      .app-form input, .app-form select, .app-form textarea { width: 100%; padding: var(--space-sm) var(--space-md); font-size: 0.9375rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: white; font-family: inherit; transition: border-color var(--transition); }
+      .app-form input:focus, .app-form select:focus, .app-form textarea:focus { outline: none; border-color: var(--color-accent-solid); box-shadow: 0 0 0 3px rgba(224, 124, 36, 0.15); }
+      .app-form textarea { min-height: 100px; resize: vertical; }
       .app-form .form-hint { font-size: 0.8125rem; color: var(--color-text-muted); margin-top: var(--space-xs); }
       .app-form .form-hint a { color: var(--color-accent-solid); text-decoration: none; }
       .app-form .form-hint a:hover { text-decoration: underline; }
-      .app-form .checkbox-group { display: flex; align-items: flex-start; gap: var(--space-md); }
-      .app-form .checkbox-group input { width: auto; margin-top: 3px; }
-      .app-form .checkbox-group label { font-weight: 400; cursor: pointer; }
-      .build-app-sidebar { position: sticky; top: 100px; }
-      .build-app-sidebar-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-xl); }
-      .build-app-sidebar h4 { font-size: 1rem; font-weight: 600; margin-bottom: var(--space-md); color: var(--color-text); }
-      .build-app-sidebar ul { list-style: none; }
-      .build-app-sidebar li { font-size: 0.9375rem; color: var(--color-text-muted); padding: var(--space-sm) 0; padding-left: var(--space-lg); position: relative; line-height: 1.5; }
-      .build-app-sidebar li::before { content: '✓'; position: absolute; left: 0; font-weight: 600; color: var(--color-accent-solid); }
-      .build-app-sidebar p { font-size: 0.875rem; color: var(--color-text-muted); margin-top: var(--space-lg); line-height: 1.6; }
-      .build-app-sidebar a { color: var(--color-accent-solid); text-decoration: none; }
-      .build-app-sidebar a:hover { text-decoration: underline; }
-      .app-form-wrapper { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-2xl); }
-      .form-submit-wrapper { margin-top: var(--space-2xl); padding-top: var(--space-xl); border-top: 1px solid var(--color-divider); }
+      .app-form .char-count { font-size: 0.75rem; color: var(--color-text-muted); margin-top: 2px; }
+      .form-nav { display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-2xl); padding-top: var(--space-xl); border-top: 1px solid var(--color-divider); gap: var(--space-md); }
+      .form-nav .btn { min-width: 120px; }
       .form-checkboxes { display: flex; flex-direction: column; gap: var(--space-lg); margin-bottom: var(--space-xl); }
+      .checkbox-group { display: flex; align-items: flex-start; gap: var(--space-md); }
+      .checkbox-group input { width: auto; margin-top: 4px; accent-color: var(--color-accent-solid); }
+      .checkbox-group label { font-size: 0.875rem; font-weight: 400; cursor: pointer; line-height: 1.5; }
+      .success-state { display: none; text-align: center; padding: var(--space-4xl) var(--space-xl); }
+      .success-state.visible { display: block; }
+      .success-state .success-icon { width: 64px; height: 64px; background: var(--gradient-accent-subtle); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-xl); font-size: 2rem; color: var(--color-accent-solid); }
+      .success-state h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: var(--space-sm); color: var(--color-text); }
+      .success-state p { font-size: 0.9375rem; color: var(--color-text-muted); max-width: 36ch; margin: 0 auto var(--space-xl); line-height: 1.6; }
+      .requirements-card { background: white; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg); margin-bottom: var(--space-xl); }
+      .requirements-card h4 { font-size: 0.8125rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-muted); margin-bottom: var(--space-md); }
+      .requirements-card ul { list-style: none; }
+      .requirements-card li { font-size: 0.875rem; color: var(--color-text-secondary); padding: var(--space-xs) 0; padding-left: var(--space-lg); position: relative; }
+      .requirements-card li::before { content: '•'; position: absolute; left: 0; color: var(--color-accent-solid); font-weight: 700; }
+      .review-summary { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-lg); margin-bottom: var(--space-xl); font-size: 0.875rem; }
+      .review-summary .review-row { display: flex; justify-content: space-between; padding: var(--space-xs) 0; border-bottom: 1px solid var(--color-divider); }
+      .review-summary .review-row:last-child { border-bottom: none; }
+      .review-summary .review-label { color: var(--color-text-muted); }
+      .review-summary .review-value { font-weight: 500; color: var(--color-text); text-align: right; max-width: 60%; }
     </style>
   </head>
   <body>
@@ -65,67 +99,103 @@
         <p class="hero-subtitle">
           Create integrations that extend Probable for advanced workflows. Reach users who need probabilistic intelligence in their stack.
         </p>
+        <p class="hero-trust" style="font-size: 0.875rem; color: var(--color-text-muted); margin-top: var(--space-lg);">We typically respond within 3–5 business days.</p>
       </section>
 
       <div class="build-app">
-        <div class="build-app-grid">
-          <div class="build-app-form-col">
-            <div class="app-form-wrapper">
-              <form class="app-form contact-form" id="build-app-form" data-email="info@francescatabor.com">
-                <div class="app-form-section">
-                  <h3>About you</h3>
-                  <div class="form-row">
-                    <div class="contact-field">
-                      <label for="app-first-name">First name</label>
-                      <input type="text" id="app-first-name" name="first_name" placeholder="Jane" required />
-                    </div>
-                    <div class="contact-field">
-                      <label for="app-last-name">Last name</label>
-                      <input type="text" id="app-last-name" name="last_name" placeholder="Smith" required />
-                    </div>
+        <div class="build-app-progress" role="progressbar" aria-valuenow="1" aria-valuemin="1" aria-valuemax="5">
+          <div class="build-app-progress-fill" id="progress-fill" style="width: 20%;"></div>
+        </div>
+
+        <div class="build-app-layout" id="form-container">
+          <aside class="build-app-steps">
+            <ol class="build-app-steps-list" aria-label="Application steps">
+              <li data-step="1" class="active"> <span class="step-num">1</span> About you</li>
+              <li data-step="2"> <span class="step-num">2</span> Company</li>
+              <li data-step="3"> <span class="step-num">3</span> Your app</li>
+              <li data-step="4"> <span class="step-num">4</span> Partnership</li>
+              <li data-step="5"> <span class="step-num">5</span> Review & submit</li>
+            </ol>
+            <div class="build-app-sidebar-card" style="margin-top: var(--space-2xl); background: white; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-lg);">
+              <h4 style="font-size: 0.8125rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-muted); margin-bottom: var(--space-md);">What you get</h4>
+              <ul style="list-style: none;">
+                <li style="font-size: 0.875rem; color: var(--color-text-secondary); padding: var(--space-xs) 0; padding-left: var(--space-lg); position: relative;"><span style="position: absolute; left: 0; color: var(--color-accent-solid);">✓</span> API access & documentation</li>
+                <li style="font-size: 0.875rem; color: var(--color-text-secondary); padding: var(--space-xs) 0; padding-left: var(--space-lg); position: relative;"><span style="position: absolute; left: 0; color: var(--color-accent-solid);">✓</span> Developer sandbox for testing</li>
+                <li style="font-size: 0.875rem; color: var(--color-text-secondary); padding: var(--space-xs) 0; padding-left: var(--space-lg); position: relative;"><span style="position: absolute; left: 0; color: var(--color-accent-solid);">✓</span> Listing in the App Marketplace</li>
+                <li style="font-size: 0.875rem; color: var(--color-text-secondary); padding: var(--space-xs) 0; padding-left: var(--space-lg); position: relative;"><span style="position: absolute; left: 0; color: var(--color-accent-solid);">✓</span> Technical onboarding support</li>
+              </ul>
+              <p style="font-size: 0.8125rem; color: var(--color-text-muted); margin-top: var(--space-md);"><a href="api-docs.html" style="color: var(--color-accent-solid); text-decoration: none;">View API docs →</a></p>
+            </div>
+          </aside>
+
+          <div class="app-form-wrapper">
+            <form class="app-form" id="build-app-form" data-email="info@francescatabor.com">
+              <div class="app-form-section active" data-step="1">
+                <h3>About you</h3>
+                <p class="section-desc">We'll use this to reach out about your application.</p>
+                <div class="form-row">
+                  <div class="contact-field">
+                    <label for="app-first-name">First name</label>
+                    <input type="text" id="app-first-name" name="first_name" placeholder="Jane" required />
                   </div>
                   <div class="contact-field">
-                    <label for="app-email">Work email</label>
-                    <input type="email" id="app-email" name="email" placeholder="jane@company.com" required />
-                    <p class="form-hint">Please use a work email. Questions? <a href="contact.html">Contact us</a>.</p>
+                    <label for="app-last-name">Last name</label>
+                    <input type="text" id="app-last-name" name="last_name" placeholder="Smith" required />
                   </div>
                 </div>
-
-                <div class="app-form-section">
-                  <h3>Company</h3>
-                  <div class="contact-field">
-                    <label for="app-company">Company or developer name</label>
-                    <input type="text" id="app-company" name="company" placeholder="Acme Inc." required />
-                  </div>
-                  <div class="contact-field">
-                    <label for="app-website">Company website</label>
-                    <input type="url" id="app-website" name="website" placeholder="https://acme.com" />
-                  </div>
-                  <div class="contact-field">
-                    <label for="app-country">Country / Region</label>
-                    <select id="app-country" name="country" required>
-                      <option value="">Select...</option>
-                      <option value="US">United States</option>
-                      <option value="CA">Canada</option>
-                      <option value="GB">United Kingdom</option>
-                      <option value="DE">Germany</option>
-                      <option value="FR">France</option>
-                      <option value="AU">Australia</option>
-                      <option value="NL">Netherlands</option>
-                      <option value="IE">Ireland</option>
-                      <option value="IN">India</option>
-                      <option value="SG">Singapore</option>
-                      <option value="OTHER">Other</option>
-                    </select>
-                  </div>
+                <div class="contact-field">
+                  <label for="app-email">Work email</label>
+                  <input type="email" id="app-email" name="email" placeholder="jane@company.com" required />
+                  <p class="form-hint">Use a work email. Questions? <a href="contact.html">Contact us</a>.</p>
                 </div>
+                <div class="form-nav">
+                  <span></span>
+                  <button type="button" class="btn btn-primary" data-next>Continue</button>
+                </div>
+              </div>
 
-                <div class="app-form-section">
-                  <h3>Your app</h3>
-                  <div class="contact-field">
-                    <label for="app-name">App or integration name</label>
-                    <input type="text" id="app-name" name="app_name" placeholder="e.g. Slack for Probable" required />
-                  </div>
+              <div class="app-form-section" data-step="2">
+                <h3>Company</h3>
+                <p class="section-desc">Tell us about your organization or practice.</p>
+                <div class="contact-field">
+                  <label for="app-company">Company or developer name</label>
+                  <input type="text" id="app-company" name="company" placeholder="Acme Inc." required />
+                </div>
+                <div class="contact-field">
+                  <label for="app-website">Company website</label>
+                  <input type="url" id="app-website" name="website" placeholder="https://acme.com" />
+                </div>
+                <div class="contact-field">
+                  <label for="app-country">Country / Region</label>
+                  <select id="app-country" name="country" required>
+                    <option value="">Select...</option>
+                    <option value="US">United States</option>
+                    <option value="CA">Canada</option>
+                    <option value="GB">United Kingdom</option>
+                    <option value="DE">Germany</option>
+                    <option value="FR">France</option>
+                    <option value="AU">Australia</option>
+                    <option value="NL">Netherlands</option>
+                    <option value="IE">Ireland</option>
+                    <option value="IN">India</option>
+                    <option value="SG">Singapore</option>
+                    <option value="OTHER">Other</option>
+                  </select>
+                </div>
+                <div class="form-nav">
+                  <button type="button" class="btn btn-ghost" data-prev>Back</button>
+                  <button type="button" class="btn btn-primary" data-next>Continue</button>
+                </div>
+              </div>
+
+              <div class="app-form-section" data-step="3">
+                <h3>Your app</h3>
+                <p class="section-desc">Describe the integration you want to build.</p>
+                <div class="contact-field">
+                  <label for="app-name">App or integration name</label>
+                  <input type="text" id="app-name" name="app_name" placeholder="e.g. Slack for Probable" required />
+                </div>
+                <div class="form-row">
                   <div class="contact-field">
                     <label for="app-category">App category</label>
                     <select id="app-category" name="category" required>
@@ -141,68 +211,84 @@
                     <label for="app-integration-type">Integration type</label>
                     <select id="app-integration-type" name="integration_type" required>
                       <option value="">Select...</option>
-                      <option value="oauth">OAuth connector (users connect their account)</option>
-                      <option value="api">API integration (server-to-server)</option>
+                      <option value="oauth">OAuth (users connect their account)</option>
+                      <option value="api">API (server-to-server)</option>
                       <option value="both">Both</option>
                     </select>
                   </div>
-                  <div class="contact-field">
-                    <label for="app-description">Describe your app</label>
-                    <textarea id="app-description" name="description" rows="4" placeholder="What does your app do? Who is it for? How does it work with Probable?" required></textarea>
+                </div>
+                <div class="contact-field">
+                  <label for="app-description">Describe your app</label>
+                  <textarea id="app-description" name="description" rows="4" placeholder="What does your app do? Who is it for? How does it work with Probable?" maxlength="1000" required></textarea>
+                  <p class="char-count"><span id="desc-count">0</span>/1000</p>
+                </div>
+                <div class="contact-field">
+                  <label for="app-demo">Demo or prototype URL <span style="font-weight: 400; color: var(--color-text-muted);">(optional)</span></label>
+                  <input type="url" id="app-demo" name="demo_url" placeholder="https://demo.example.com" />
+                </div>
+                <div class="form-nav">
+                  <button type="button" class="btn btn-ghost" data-prev>Back</button>
+                  <button type="button" class="btn btn-primary" data-next>Continue</button>
+                </div>
+              </div>
+
+              <div class="app-form-section" data-step="4">
+                <h3>Partnership</h3>
+                <p class="section-desc">Help us understand your goals.</p>
+                <div class="contact-field">
+                  <label for="app-why">Why do you want to build on Probable?</label>
+                  <textarea id="app-why" name="why_probable" rows="4" placeholder="What motivated you to apply? What do you hope to achieve?" maxlength="500" required></textarea>
+                  <p class="char-count"><span id="why-count">0</span>/500</p>
+                </div>
+                <div class="form-nav">
+                  <button type="button" class="btn btn-ghost" data-prev>Back</button>
+                  <button type="button" class="btn btn-primary" data-next>Continue</button>
+                </div>
+              </div>
+
+              <div class="app-form-section" data-step="5">
+                <h3>Review & submit</h3>
+                <p class="section-desc">Confirm your details and submit your application.</p>
+                <div class="requirements-card">
+                  <h4>Before you apply</h4>
+                  <ul>
+                    <li>Working integration or prototype</li>
+                    <li>Clear value for Probable users</li>
+                    <li>Secure OAuth 2.0 or API key authentication</li>
+                  </ul>
+                </div>
+                <div class="review-summary" id="review-summary">
+                  <div class="review-row"><span class="review-label">Name</span><span class="review-value" id="review-name">—</span></div>
+                  <div class="review-row"><span class="review-label">Email</span><span class="review-value" id="review-email">—</span></div>
+                  <div class="review-row"><span class="review-label">Company</span><span class="review-value" id="review-company">—</span></div>
+                  <div class="review-row"><span class="review-label">App</span><span class="review-value" id="review-app">—</span></div>
+                  <div class="review-row"><span class="review-label">Category</span><span class="review-value" id="review-category">—</span></div>
+                </div>
+                <div class="form-checkboxes">
+                  <div class="checkbox-group">
+                    <input type="checkbox" id="app-marketing" name="marketing" />
+                    <label for="app-marketing">Send me product updates, API news, and partner events. I can unsubscribe anytime.</label>
                   </div>
-                  <div class="contact-field">
-                    <label for="app-demo">Demo or prototype URL <span style="font-weight: 400; color: var(--color-text-muted);">(optional)</span></label>
-                    <input type="url" id="app-demo" name="demo_url" placeholder="https://demo.example.com" />
+                  <div class="checkbox-group">
+                    <input type="checkbox" id="app-privacy" name="privacy" required />
+                    <label for="app-privacy">I agree to Probable's <a href="#" style="color: var(--color-accent-solid);">Privacy Policy</a> and <a href="#" style="color: var(--color-accent-solid);">Partner Terms</a>. My data will be processed in accordance with these policies.</label>
                   </div>
                 </div>
-
-                <div class="app-form-section">
-                  <h3>Partnership</h3>
-                  <div class="contact-field">
-                    <label for="app-why">Why do you want to build on Probable?</label>
-                    <textarea id="app-why" name="why_probable" rows="3" placeholder="What motivated you to apply? What do you hope to achieve?" required></textarea>
-                  </div>
-                </div>
-
-                <div class="form-submit-wrapper">
-                  <div class="form-checkboxes">
-                    <div class="checkbox-group">
-                      <input type="checkbox" id="app-marketing" name="marketing" />
-                      <label for="app-marketing">Send me product updates, API news, and partner events. I can unsubscribe anytime.</label>
-                    </div>
-                    <div class="checkbox-group">
-                      <input type="checkbox" id="app-privacy" name="privacy" required />
-                      <label for="app-privacy">I agree to Probable's <a href="#" style="color: var(--color-accent-solid);">Privacy Policy</a> and that my data will be processed in accordance with it.</label>
-                    </div>
-                  </div>
+                <div class="form-nav">
+                  <button type="button" class="btn btn-ghost" data-prev>Back</button>
                   <button type="submit" class="btn btn-primary">Submit application</button>
-                  <p class="form-hint" style="margin-top: var(--space-md);">We typically respond within 3–5 business days.</p>
                 </div>
-              </form>
+              </div>
+            </form>
+
+            <div class="success-state" id="success-state">
+              <div class="success-icon">✓</div>
+              <h3>Application received</h3>
+              <p>Thanks for applying to build on Probable. We review applications within 3–5 business days and will reach out at the email you provided.</p>
+              <p style="font-size: 0.875rem; margin-top: var(--space-md);"><strong>What happens next?</strong><br/>You'll receive a confirmation email shortly. Our partnerships team will review your application and schedule a call if we're a good fit.</p>
+              <a href="marketplace.html" class="btn btn-primary" style="margin-top: var(--space-lg); display: inline-block;">Browse the marketplace</a>
             </div>
           </div>
-
-          <aside class="build-app-sidebar">
-            <div class="build-app-sidebar-card">
-              <h4>What you get</h4>
-              <ul>
-                <li>API access & documentation</li>
-                <li>Developer sandbox for testing</li>
-                <li>Listing in the App Marketplace</li>
-                <li>Technical onboarding support</li>
-                <li>Early access to new platform features</li>
-              </ul>
-              <p>New to our API? <a href="api-docs.html">View API docs</a> to explore endpoints and entities.</p>
-            </div>
-            <div class="build-app-sidebar-card" style="margin-top: var(--space-xl);">
-              <h4>Requirements</h4>
-              <ul>
-                <li>Working integration or prototype</li>
-                <li>Clear value for Probable users</li>
-                <li>Secure OAuth 2.0 or API key auth</li>
-              </ul>
-            </div>
-          </aside>
         </div>
       </div>
     </main>
@@ -221,5 +307,94 @@
     </footer>
 
     <script src="/scripts/main.js"></script>
+    <script>
+      (function() {
+        const form = document.getElementById('build-app-form');
+        const formContainer = document.getElementById('form-container');
+        const successState = document.getElementById('success-state');
+        const progressFill = document.getElementById('progress-fill');
+        const steps = form.querySelectorAll('.app-form-section');
+        const stepItems = document.querySelectorAll('.build-app-steps-list li');
+        const categoryLabels = { data: 'Data sources', communication: 'Communication', automation: 'Automation', bi: 'BI & dashboards', other: 'Other' };
+
+        let currentStep = 1;
+        const totalSteps = 5;
+
+        function goToStep(step) {
+          if (step < 1 || step > totalSteps) return;
+          currentStep = step;
+          steps.forEach((s, i) => {
+            s.classList.toggle('active', parseInt(s.dataset.step) === step);
+          });
+          stepItems.forEach((item, i) => {
+            const n = parseInt(item.dataset.step);
+            item.classList.remove('active', 'completed');
+            if (n === step) item.classList.add('active');
+            else if (n < step) item.classList.add('completed');
+          });
+          progressFill.style.width = (step / totalSteps * 100) + '%';
+          progressFill.setAttribute('aria-valuenow', step);
+          if (step === 5) updateReviewSummary();
+        }
+
+        function updateReviewSummary() {
+          const d = new FormData(form);
+          document.getElementById('review-name').textContent = [d.get('first_name'), d.get('last_name')].filter(Boolean).join(' ') || '—';
+          document.getElementById('review-email').textContent = d.get('email') || '—';
+          document.getElementById('review-company').textContent = d.get('company') || '—';
+          document.getElementById('review-app').textContent = d.get('app_name') || '—';
+          document.getElementById('review-category').textContent = categoryLabels[d.get('category')] || d.get('category') || '—';
+        }
+
+        function validateStep(step) {
+          const section = form.querySelector('.app-form-section[data-step="' + step + '"]');
+          const inputs = section.querySelectorAll('input[required], select[required], textarea[required]');
+          for (const input of inputs) {
+            if (!input.value.trim()) {
+              input.reportValidity();
+              input.focus();
+              return false;
+            }
+          }
+          return true;
+        }
+
+        form.querySelectorAll('[data-next]').forEach(btn => {
+          btn.addEventListener('click', function() {
+            if (validateStep(currentStep)) goToStep(currentStep + 1);
+          });
+        });
+        form.querySelectorAll('[data-prev]').forEach(btn => {
+          btn.addEventListener('click', function() {
+            goToStep(currentStep - 1);
+          });
+        });
+        stepItems.forEach(item => {
+          item.addEventListener('click', function() {
+            const step = parseInt(this.dataset.step);
+            if (step <= currentStep) goToStep(step);
+          });
+        });
+
+        document.getElementById('app-description').addEventListener('input', function() {
+          document.getElementById('desc-count').textContent = this.value.length;
+        });
+        document.getElementById('app-why').addEventListener('input', function() {
+          document.getElementById('why-count').textContent = this.value.length;
+        });
+
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const email = form.dataset.email || 'info@francescatabor.com';
+          const data = new FormData(form);
+          const entries = Array.from(data.entries()).filter(([, v]) => v && String(v).trim());
+          const body = entries.map(([k, v]) => k.replace(/_/g, ' ') + ': ' + v).join('\n\n');
+          const subject = encodeURIComponent('[Probable] Build an App Application');
+          window.location.href = 'mailto:' + email + '?subject=' + subject + '&body=' + encodeURIComponent(body);
+          formContainer.style.display = 'none';
+          successState.classList.add('visible');
+        });
+      })();
+    </script>
   </body>
 </html>

@@ -8,7 +8,8 @@ import {
   Cpu,
   Database,
   Table2,
-  Users
+  Users,
+  Plug2
 } from "lucide-react";
 import {
   Sidebar,
@@ -30,6 +31,7 @@ const mainNavItems = [
   { title: "Forecasts", url: "/forecasts", icon: TrendingUp },
   { title: "Data Sources", url: "/data-sources", icon: Database },
   { title: "Datasets", url: "/datasets", icon: Table2 },
+  { title: "Integrations", url: "/integrations", icon: Plug2 },
   { title: "Users", url: "/users", icon: Users },
   { title: "Agents", url: "/agents", icon: Cpu },
 ];

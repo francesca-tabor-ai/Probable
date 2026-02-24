@@ -13,8 +13,8 @@ import models  # noqa: F401
 
 config = context.config
 settings = get_settings()
-# Use sync URL for migrations
-sync_url = settings.database_url.replace("postgresql+asyncpg", "postgresql")
+# Use sync URL for migrations (resolves Railway internal vs public for local runs)
+sync_url = settings.database_url_sync
 config.set_main_option("sqlalchemy.url", sync_url)
 
 if config.config_file_name is not None:

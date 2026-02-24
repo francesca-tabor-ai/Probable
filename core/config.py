@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     """Application settings loaded from environment."""
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=(".env", ".env.local"),
         env_file_encoding="utf-8",
         case_sensitive=False,
     )
@@ -26,10 +26,14 @@ class Settings(BaseSettings):
 
     # Database (Railway provides postgresql:// — we convert to postgresql+asyncpg for async)
     database_url: str = "postgresql+asyncpg://probable:probable@localhost:5432/probable"
+    database_public_url: Optional[str] = None
 
     def _get_database_url(self) -> str:
-        """Ensure asyncpg driver for PostgreSQL URLs (Railway uses postgresql://)."""
+        """Ensure asyncpg driver for PostgreSQL URLs (Railway uses postgresql://).
+        Use DATABASE_PUBLIC_URL when DATABASE_URL points to Railway internal (unreachable from local)."""
         url = self.database_url
+        if "railway.internal" in url and self.database_public_url:
+            url = self.database_public_url
         if url.startswith("postgresql://") and "+asyncpg" not in url:
             return url.replace("postgresql://", "postgresql+asyncpg://", 1)
         return url
@@ -38,11 +42,21 @@ class Settings(BaseSettings):
     def database_url_async(self) -> str:
         return self._get_database_url()
 
+    @property
+    def database_url_sync(self) -> str:
+        """Sync URL for Alembic (postgresql://, no asyncpg)."""
+        url = self.database_url
+        if "railway.internal" in url and self.database_public_url:
+            url = self.database_public_url
+        return url.replace("postgresql+asyncpg", "postgresql")
+
     # Redis
     redis_url: str = "redis://localhost:6379/0"
 
     # LLM
     openai_api_key: Optional[str] = None
+    anthropic_api_key: Optional[str] = None
+    gemini_api_key: Optional[str] = None
     openai_model: str = "gpt-4o-mini"
 
     # Storage (S3-compatible)
