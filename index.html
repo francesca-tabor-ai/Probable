@@ -14,8 +14,10 @@
     <header class="header">
       <a href="/" class="logo">Probable</a>
       <nav class="nav">
-        <a href="#features">Features</a>
-        <a href="#how-it-works">How it works</a>
+        <a href="#problem">The problem</a>
+        <a href="#solution">The solution</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="case-studies.html">Case studies</a>
         <a href="#cta" class="nav-cta">Get early access</a>
       </nav>
       <button class="menu-toggle" aria-label="Toggle menu">
@@ -27,16 +29,16 @@
 
     <main>
       <section class="hero">
-        <p class="hero-eyebrow">Probabilistic intelligence for modern teams</p>
-        <h1 class="hero-title">Predict with confidence</h1>
+        <p class="hero-eyebrow">For ops leads, strategy teams & finance leaders</p>
+        <h1 class="hero-title">Stop guessing. Start predicting.</h1>
         <p class="hero-subtitle">
-          Turn uncertainty into clarity. Probable helps you make better decisions
-          by quantifying risk, forecasting outcomes, and understanding what's
-          likely to happen next.
+          You're making high-stakes decisions with single-number forecasts and gut feel.
+          Probable turns your data into quantified probabilities—so you know how
+          confident you really are.
         </p>
         <div class="hero-actions">
-          <a href="#cta" class="btn btn-primary">Request early access</a>
-          <a href="#how-it-works" class="btn btn-ghost">See how it works</a>
+          <a href="#cta" class="btn btn-primary">Get early access</a>
+          <a href="#problem" class="btn btn-ghost">See the problem we solve</a>
         </div>
         <div class="hero-product">
           <div class="product-mockup">
@@ -73,8 +75,24 @@
         </div>
       </section>
 
-      <section id="features" class="features">
-        <h2 class="section-title">Built for the uncertain</h2>
+      <section id="problem" class="problem">
+        <p class="section-eyebrow">Sound familiar?</p>
+        <h2 class="section-title">The forecast trap</h2>
+        <p class="problem-lead">
+          Ops leads, strategy teams, and finance leaders are stuck. You own revenue targets,
+          resource planning, product roadmaps—but you're flying blind.
+        </p>
+        <ul class="problem-list">
+          <li><strong>Single-number forecasts</strong> create false certainty. One point estimate hides the real range of outcomes and leaves you exposed when reality lands elsewhere.</li>
+          <li><strong>Static snapshots</strong> go stale. By the time your next planning cycle rolls around, the data has moved and you're redoing everything by hand.</li>
+          <li><strong>Scattered tools</strong>—spreadsheets, BI, separate risk models—that don't connect. Leadership asks "how confident are we?" and you're piecing together a story from five sources.</li>
+          <li><strong>Gut-feel decisions</strong> when it matters most. Missed targets, misallocated resources, and slower, less confident planning.
+        </ul>
+      </section>
+
+      <section id="solution" class="features">
+        <p class="section-eyebrow">The Probable approach</p>
+        <h2 class="section-title">How we solve it</h2>
         <div class="features-grid">
           <article class="feature-card">
             <div class="feature-icon">
@@ -110,6 +128,7 @@
       </section>
 
       <section id="how-it-works" class="how-it-works">
+        <p class="section-eyebrow">Get started in minutes</p>
         <h2 class="section-title">How it works</h2>
         <div class="steps">
           <div class="step">
@@ -131,8 +150,8 @@
       </section>
 
       <section id="cta" class="cta">
-        <h2 class="cta-title">Ready to predict with confidence?</h2>
-        <p class="cta-subtitle">Join the waitlist for early access. No credit card required.</p>
+        <h2 class="cta-title">Ready to stop guessing?</h2>
+        <p class="cta-subtitle">Join teams who've replaced gut feel with real probabilities. Early access—no credit card required.</p>
         <form class="cta-form" action="#" method="post">
           <input
             type="email"
@@ -146,8 +165,50 @@
       </section>
     </main>
 
+    <!-- Chat widget -->
+    <div class="chat-widget" aria-live="polite">
+      <button class="chat-toggle" aria-label="Open chat" aria-expanded="false">
+        <svg class="chat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+      </button>
+      <div class="chat-panel" hidden>
+        <div class="chat-header">
+          <h3 class="chat-title">Probable Guide</h3>
+          <p class="chat-subtitle">Ask me anything about the platform</p>
+          <button class="chat-close" aria-label="Close chat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="chat-messages">
+          <div class="chat-message chat-message-bot">
+            <p>Hi! I'm here to help you learn about Probable. What would you like to know?</p>
+          </div>
+        </div>
+        <div class="chat-probes">
+          <span class="chat-probes-label">Try asking:</span>
+          <button type="button" class="chat-probe" data-probe="What is Probable?">What is Probable?</button>
+          <button type="button" class="chat-probe" data-probe="Who is Probable for?">Who is Probable for?</button>
+          <button type="button" class="chat-probe" data-probe="How does Probable work?">How does it work?</button>
+          <button type="button" class="chat-probe" data-probe="What problems does Probable solve?">What problems does it solve?</button>
+          <button type="button" class="chat-probe" data-probe="How do I get started?">How do I get started?</button>
+          <button type="button" class="chat-probe" data-probe="What makes Probable different?">What makes it different?</button>
+        </div>
+        <div class="chat-input-area">
+          <input type="text" class="chat-input" placeholder="Ask a question..." autocomplete="off" />
+          <button type="button" class="chat-send" aria-label="Send message">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
     <footer class="footer">
       <a href="/" class="logo">Probable</a>
+      <nav class="footer-nav">
+        <a href="pricing.html">Pricing</a>
+        <a href="case-studies.html">Case studies</a>
+      </nav>
       <p class="footer-copy">© 2025 Probable. All rights reserved.</p>
     </footer>
 
