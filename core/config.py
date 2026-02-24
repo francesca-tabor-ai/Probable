@@ -19,8 +19,19 @@ class Settings(BaseSettings):
     app_name: str = "Probable.news"
     debug: bool = False
 
-    # Database
+    # Database (Railway provides postgresql:// — we convert to postgresql+asyncpg for async)
     database_url: str = "postgresql+asyncpg://probable:probable@localhost:5432/probable"
+
+    def _get_database_url(self) -> str:
+        """Ensure asyncpg driver for PostgreSQL URLs (Railway uses postgresql://)."""
+        url = self.database_url
+        if url.startswith("postgresql://") and "+asyncpg" not in url:
+            return url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return url
+
+    @property
+    def database_url_async(self) -> str:
+        return self._get_database_url()
 
     # Redis
     redis_url: str = "redis://localhost:6379/0"

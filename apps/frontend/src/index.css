@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --color-bg: #FFFFFF;
+  --color-ink: #0A0A0A;
+  --color-line: #E2E8F0;
+  --color-muted: #64748B;
+  --color-surface: #F8FAFC;
+  --color-accent-start: #FACC15;
+  --color-accent-mid: #F59E0B;
+  --color-accent-end: #D97706;
+}
+
+@layer base {
+  body {
+    @apply bg-bg text-ink font-sans antialiased selection:bg-accent-mid/30;
+  }
+  
+  h1, h2, h3, h4 {
+    @apply tracking-tight font-bold text-ink;
+  }
+}
+
+.signature-gradient {
+  background: linear-gradient(135deg, var(--color-accent-start), var(--color-accent-mid), var(--color-accent-end));
+}
+
+.signature-text-gradient {
+  background: linear-gradient(135deg, var(--color-accent-start), var(--color-accent-mid), var(--color-accent-end));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Modern Dashboard Styles */
+.data-card {
+  @apply bg-white border border-line rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 hover:-translate-y-1;
+}
+
+.data-row-modern {
+  @apply grid grid-cols-[auto_1fr_auto_auto] gap-6 p-5 border-b border-line items-center transition-colors hover:bg-surface first:rounded-t-2xl last:rounded-b-2xl last:border-b-0;
+}
+
+.badge {
+  @apply px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.mockup-container {
+  @apply relative rounded-3xl border border-line bg-surface p-4 shadow-2xl overflow-hidden;
+}
+
+.mockup-header {
+  @apply flex gap-1.5 mb-4 px-2;
+}
+
+.mockup-dot {
+  @apply w-2.5 h-2.5 rounded-full bg-line;
+}
+

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Probable API documentation — Entities, endpoints, and CRUD operations for the forecasting and data journalism platform." />
+    <title>API Docs — Probable</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles/main.css" />
+    <style>
+      .api-docs { max-width: 900px; margin: 0 auto; padding: 0 var(--space-xl) var(--space-5xl); }
+      .api-docs section { margin-bottom: var(--space-4xl); }
+      .api-docs h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: var(--space-lg); color: var(--color-text); }
+      .api-docs h3 { font-size: 1.125rem; font-weight: 600; margin: var(--space-xl) 0 var(--space-md); color: var(--color-text); }
+      .api-docs table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+      .api-docs th, .api-docs td { padding: var(--space-sm) var(--space-md); text-align: left; border-bottom: 1px solid var(--color-border); }
+      .api-docs th { font-weight: 600; color: var(--color-text-muted); background: var(--color-surface); }
+      .api-docs .entity-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-xl); margin-bottom: var(--space-lg); }
+      .api-docs .entity-name { font-weight: 700; font-size: 1rem; margin-bottom: var(--space-sm); color: var(--color-text); }
+      .api-docs .entity-desc { font-size: 0.875rem; color: var(--color-text-muted); margin-bottom: var(--space-md); }
+      .api-docs .endpoint-row { display: flex; align-items: center; gap: var(--space-md); padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-divider); font-family: ui-monospace, monospace; font-size: 0.875rem; }
+      .api-docs .endpoint-row:last-child { border-bottom: none; }
+      .api-docs .method { font-weight: 700; min-width: 3.5rem; }
+      .api-docs .method.get { color: #0ea5e9; }
+      .api-docs .method.post { color: #22c55e; }
+      .api-docs .method.put { color: #f59e0b; }
+      .api-docs .method.patch { color: #f59e0b; }
+      .api-docs .method.delete { color: #ef4444; }
+      .api-docs .path { color: var(--color-text); }
+      .api-docs .interactive-link { display: inline-flex; align-items: center; gap: var(--space-sm); margin-top: var(--space-lg); padding: var(--space-sm) var(--space-lg); background: var(--gradient-accent); color: white; font-weight: 600; text-decoration: none; border-radius: var(--radius-md); font-size: 0.9375rem; }
+      .api-docs .interactive-link:hover { opacity: 0.95; }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <a href="/" class="logo">Probable</a>
+      <nav class="nav">
+        <a href="/#problem">The problem</a>
+        <a href="/#solution">The solution</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="case-studies.html">Case studies</a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="contact.html">Contact</a>
+        <a href="/#cta" class="nav-cta">Get early access</a>
+      </nav>
+      <button class="menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </header>
+
+    <main>
+      <section class="page-hero">
+        <p class="hero-eyebrow">Developer reference</p>
+        <h1 class="hero-title">API Documentation</h1>
+        <p class="hero-subtitle">
+          Entities, endpoints, and CRUD operations for the Probable forecasting and data journalism platform.
+        </p>
+      </section>
+
+      <div class="api-docs">
+        <section id="entities">
+          <h2>Entities</h2>
+          <p class="section-desc" style="color: var(--color-text-muted); margin-bottom: var(--space-xl);">Core data models used across the platform.</p>
+
+          <div class="entity-card">
+            <div class="entity-name">Project</div>
+            <p class="entity-desc">Final publishable unit: article + analysis + forecast + charts.</p>
+            <table>
+              <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>id</td><td>int</td><td>Primary key</td></tr>
+                <tr><td>slug</td><td>string</td><td>Unique URL slug</td></tr>
+                <tr><td>title</td><td>string</td><td>Project title</td></tr>
+                <tr><td>lede</td><td>string?</td><td>Lead paragraph</td></tr>
+                <tr><td>origin_article_id</td><td>int?</td><td>Source article</td></tr>
+                <tr><td>sections</td><td>JSON</td><td>Content sections</td></tr>
+                <tr><td>charts</td><td>JSON</td><td>Chart configs</td></tr>
+                <tr><td>datasets</td><td>JSON</td><td>Dataset refs</td></tr>
+                <tr><td>methodology</td><td>string?</td><td>Methodology text</td></tr>
+                <tr><td>forecast_block</td><td>JSON?</td><td>Forecast output</td></tr>
+                <tr><td>status</td><td>string</td><td>draft | published</td></tr>
+                <tr><td>topic</td><td>string</td><td>Topic tag</td></tr>
+                <tr><td>created_at</td><td>datetime</td><td>Creation timestamp</td></tr>
+                <tr><td>updated_at</td><td>datetime</td><td>Last update</td></tr>
+                <tr><td>published_at</td><td>datetime?</td><td>Publish time</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="entity-card">
+            <div class="entity-name">Article</div>
+            <p class="entity-desc">Normalised content from RSS with extracted entities and topics.</p>
+            <table>
+              <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>id</td><td>int</td><td>Primary key</td></tr>
+                <tr><td>rss_item_id</td><td>int?</td><td>Source RSS item</td></tr>
+                <tr><td>headline</td><td>string</td><td>Article headline</td></tr>
+                <tr><td>dek</td><td>string?</td><td>Subheadline</td></tr>
+                <tr><td>body</td><td>text</td><td>Full body</td></tr>
+                <tr><td>article_url</td><td>string</td><td>Original URL</td></tr>
+                <tr><td>source</td><td>string</td><td>Publication source</td></tr>
+                <tr><td>topics</td><td>JSON</td><td>Topic tags</td></tr>
+                <tr><td>entities</td><td>JSON</td><td>Extracted entities</td></tr>
+                <tr><td>key_numbers</td><td>JSON?</td><td>Key figures</td></tr>
+                <tr><td>quotes</td><td>JSON?</td><td>Extracted quotes</td></tr>
+                <tr><td>created_at</td><td>datetime</td><td>Creation timestamp</td></tr>
+                <tr><td>updated_at</td><td>datetime</td><td>Last update</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="entity-card">
+            <div class="entity-name">RssItem</div>
+            <p class="entity-desc">Raw RSS entry before processing into Article.</p>
+            <table>
+              <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>id</td><td>int</td><td>Primary key</td></tr>
+                <tr><td>url</td><td>string</td><td>Unique item URL</td></tr>
+                <tr><td>guid</td><td>string?</td><td>RSS guid</td></tr>
+                <tr><td>title</td><td>string</td><td>Item title</td></tr>
+                <tr><td>body</td><td>text?</td><td>Raw body</td></tr>
+                <tr><td>raw_html</td><td>text?</td><td>Original HTML</td></tr>
+                <tr><td>source</td><td>string</td><td>Feed source</td></tr>
+                <tr><td>published_at</td><td>datetime?</td><td>Publication date</td></tr>
+                <tr><td>fetched_at</td><td>datetime</td><td>Fetch timestamp</td></tr>
+                <tr><td>processed_at</td><td>datetime?</td><td>Processed when</td></tr>
+                <tr><td>article_id</td><td>int?</td><td>Link to Article</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="entity-card">
+            <div class="entity-name">Dataset</div>
+            <p class="entity-desc">Cleaned data blob (JSON or S3 reference).</p>
+            <table>
+              <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>id</td><td>int</td><td>Primary key</td></tr>
+                <tr><td>article_id</td><td>int?</td><td>Related article</td></tr>
+                <tr><td>topic</td><td>string</td><td>Topic tag</td></tr>
+                <tr><td>data</td><td>JSON</td><td>Data payload</td></tr>
+                <tr><td>s3_key</td><td>string?</td><td>S3 object key</td></tr>
+                <tr><td>source</td><td>string</td><td>Data source</td></tr>
+                <tr><td>created_at</td><td>datetime</td><td>Creation timestamp</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="entity-card">
+            <div class="entity-name">DataSource</div>
+            <p class="entity-desc">Configuration for external data sources per topic.</p>
+            <table>
+              <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>id</td><td>int</td><td>Primary key</td></tr>
+                <tr><td>topic</td><td>string</td><td>Unique topic</td></tr>
+                <tr><td>config</td><td>JSON</td><td>Source config</td></tr>
+                <tr><td>created_at</td><td>datetime</td><td>Creation timestamp</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="entity-card">
+            <div class="entity-name">ForecastSpec</div>
+            <p class="entity-desc">Stored forecast specification from Forecast Design Agent.</p>
+            <table>
+              <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>id</td><td>int</td><td>Primary key</td></tr>
+                <tr><td>project_id</td><td>int?</td><td>Related project</td></tr>
+                <tr><td>article_id</td><td>int?</td><td>Related article</td></tr>
+                <tr><td>target</td><td>string</td><td>Forecast target</td></tr>
+                <tr><td>horizon</td><td>string</td><td>Time horizon</td></tr>
+                <tr><td>granularity</td><td>string</td><td>Output granularity</td></tr>
+                <tr><td>constraints</td><td>JSON</td><td>Constraints</td></tr>
+                <tr><td>topic</td><td>string</td><td>Topic tag</td></tr>
+                <tr><td>created_at</td><td>datetime</td><td>Creation timestamp</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="entity-card">
+            <div class="entity-name">ForecastRun</div>
+            <p class="entity-desc">Model run output: point estimates, distributions.</p>
+            <table>
+              <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td>id</td><td>int</td><td>Primary key</td></tr>
+                <tr><td>project_id</td><td>int?</td><td>Related project</td></tr>
+                <tr><td>forecast_spec_id</td><td>int?</td><td>Spec used</td></tr>
+                <tr><td>model_name</td><td>string</td><td>Model identifier</td></tr>
+                <tr><td>result</td><td>JSON</td><td>Forecast result</td></tr>
+                <tr><td>calibration_flags</td><td>JSON</td><td>Calibration flags</td></tr>
+                <tr><td>run_at</td><td>datetime</td><td>Run timestamp</td></tr>
+                <tr><td>metadata</td><td>JSON</td><td>Run metadata</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="endpoints">
+          <h2>API Endpoints</h2>
+          <p class="section-desc" style="color: var(--color-text-muted); margin-bottom: var(--space-xl);">REST endpoints with full CRUD where applicable. Base URL: your API host (e.g. <code style="background: var(--color-surface); padding: 2px 6px; border-radius: 4px;">http://localhost:8000</code>)</p>
+
+          <h3>System</h3>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/health</span><span style="color: var(--color-text-muted);">— Health check</span></div>
+
+          <h3>Projects</h3>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/projects</span><span style="color: var(--color-text-muted);">— List projects</span></div>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/projects/{id}</span><span style="color: var(--color-text-muted);">— Get project by ID</span></div>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/projects/slug/{slug}</span><span style="color: var(--color-text-muted);">— Get project by slug</span></div>
+          <div class="endpoint-row"><span class="method post">POST</span><span class="path">/projects</span><span style="color: var(--color-text-muted);">— Create project</span></div>
+          <div class="endpoint-row"><span class="method put">PUT</span><span class="path">/projects/{id}</span><span style="color: var(--color-text-muted);">— Update project</span></div>
+          <div class="endpoint-row"><span class="method delete">DELETE</span><span class="path">/projects/{id}</span><span style="color: var(--color-text-muted);">— Delete project</span></div>
+
+          <h3>Articles</h3>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/articles</span><span style="color: var(--color-text-muted);">— List articles</span></div>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/articles/{id}</span><span style="color: var(--color-text-muted);">— Get article</span></div>
+          <div class="endpoint-row"><span class="method post">POST</span><span class="path">/articles</span><span style="color: var(--color-text-muted);">— Create article</span></div>
+          <div class="endpoint-row"><span class="method put">PUT</span><span class="path">/articles/{id}</span><span style="color: var(--color-text-muted);">— Update article</span></div>
+          <div class="endpoint-row"><span class="method delete">DELETE</span><span class="path">/articles/{id}</span><span style="color: var(--color-text-muted);">— Delete article</span></div>
+
+          <h3>RSS Items</h3>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/rss-items</span><span style="color: var(--color-text-muted);">— List RSS items</span></div>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/rss-items/{id}</span><span style="color: var(--color-text-muted);">— Get RSS item</span></div>
+          <div class="endpoint-row"><span class="method post">POST</span><span class="path">/rss-items</span><span style="color: var(--color-text-muted);">— Create RSS item</span></div>
+          <div class="endpoint-row"><span class="method put">PUT</span><span class="path">/rss-items/{id}</span><span style="color: var(--color-text-muted);">— Update RSS item</span></div>
+          <div class="endpoint-row"><span class="method delete">DELETE</span><span class="path">/rss-items/{id}</span><span style="color: var(--color-text-muted);">— Delete RSS item</span></div>
+
+          <h3>Datasets</h3>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/datasets</span><span style="color: var(--color-text-muted);">— List datasets</span></div>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/datasets/{id}</span><span style="color: var(--color-text-muted);">— Get dataset</span></div>
+          <div class="endpoint-row"><span class="method post">POST</span><span class="path">/datasets</span><span style="color: var(--color-text-muted);">— Create dataset</span></div>
+          <div class="endpoint-row"><span class="method put">PUT</span><span class="path">/datasets/{id}</span><span style="color: var(--color-text-muted);">— Update dataset</span></div>
+          <div class="endpoint-row"><span class="method delete">DELETE</span><span class="path">/datasets/{id}</span><span style="color: var(--color-text-muted);">— Delete dataset</span></div>
+
+          <h3>Data Sources</h3>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/data-sources</span><span style="color: var(--color-text-muted);">— List data sources</span></div>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/data-sources/{id}</span><span style="color: var(--color-text-muted);">— Get data source</span></div>
+          <div class="endpoint-row"><span class="method post">POST</span><span class="path">/data-sources</span><span style="color: var(--color-text-muted);">— Create data source</span></div>
+          <div class="endpoint-row"><span class="method put">PUT</span><span class="path">/data-sources/{id}</span><span style="color: var(--color-text-muted);">— Update data source</span></div>
+          <div class="endpoint-row"><span class="method delete">DELETE</span><span class="path">/data-sources/{id}</span><span style="color: var(--color-text-muted);">— Delete data source</span></div>
+
+          <h3>Forecast Specs</h3>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/forecast-specs</span><span style="color: var(--color-text-muted);">— List forecast specs</span></div>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/forecast-specs/{id}</span><span style="color: var(--color-text-muted);">— Get forecast spec</span></div>
+          <div class="endpoint-row"><span class="method post">POST</span><span class="path">/forecast-specs</span><span style="color: var(--color-text-muted);">— Create forecast spec</span></div>
+          <div class="endpoint-row"><span class="method put">PUT</span><span class="path">/forecast-specs/{id}</span><span style="color: var(--color-text-muted);">— Update forecast spec</span></div>
+          <div class="endpoint-row"><span class="method delete">DELETE</span><span class="path">/forecast-specs/{id}</span><span style="color: var(--color-text-muted);">— Delete forecast spec</span></div>
+
+          <h3>Forecast Runs</h3>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/forecast-runs</span><span style="color: var(--color-text-muted);">— List forecast runs</span></div>
+          <div class="endpoint-row"><span class="method get">GET</span><span class="path">/forecast-runs/{id}</span><span style="color: var(--color-text-muted);">— Get forecast run</span></div>
+          <div class="endpoint-row"><span class="method post">POST</span><span class="path">/forecast-runs</span><span style="color: var(--color-text-muted);">— Create forecast run</span></div>
+          <div class="endpoint-row"><span class="method put">PUT</span><span class="path">/forecast-runs/{id}</span><span style="color: var(--color-text-muted);">— Update forecast run</span></div>
+          <div class="endpoint-row"><span class="method delete">DELETE</span><span class="path">/forecast-runs/{id}</span><span style="color: var(--color-text-muted);">— Delete forecast run</span></div>
+
+          <a href="http://localhost:8000/docs" target="_blank" rel="noopener" class="interactive-link">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Interactive Swagger docs (when API is running)
+          </a>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <a href="/" class="logo">Probable</a>
+      <nav class="footer-nav">
+        <a href="pricing.html">Pricing</a>
+        <a href="case-studies.html">Case studies</a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="build-app.html">Build an app</a>
+        <a href="contact.html">Contact</a>
+        <a href="api-docs.html">API Docs</a>
+      </nav>
+      <p class="footer-copy">© 2025 Probable. All rights reserved.</p>
+    </footer>
+
+    <script src="/scripts/main.js"></script>
+  </body>
+</html>

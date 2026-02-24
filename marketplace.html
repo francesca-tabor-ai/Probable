@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Probable App Marketplace — Connect data sources, automation tools, and BI platforms for advanced probabilistic workflows." />
+    <title>App Marketplace — Probable</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles/main.css" />
+    <style>
+      .marketplace { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-xl) var(--space-5xl); }
+      .marketplace-filters { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-bottom: var(--space-2xl); justify-content: center; }
+      .marketplace-filter { padding: var(--space-sm) var(--space-lg); font-size: 0.875rem; font-weight: 500; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-full); color: var(--color-text-muted); cursor: pointer; transition: var(--transition); }
+      .marketplace-filter:hover, .marketplace-filter.active { background: var(--gradient-accent-subtle); border-color: var(--color-accent-solid); color: var(--color-text); }
+      .marketplace-filter.active { font-weight: 600; }
+      .marketplace-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: var(--space-xl); }
+      .app-card { display: flex; flex-direction: column; padding: var(--space-xl); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); transition: var(--transition); }
+      .app-card:hover { border-color: var(--color-text-secondary); box-shadow: var(--shadow-md); }
+      .app-card-header { display: flex; align-items: flex-start; gap: var(--space-md); margin-bottom: var(--space-md); }
+      .app-icon { width: 48px; height: 48px; border-radius: var(--radius-lg); background: var(--color-bg); border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 700; color: var(--color-accent-solid); flex-shrink: 0; }
+      .app-card h3 { font-size: 1.125rem; font-weight: 600; margin: 0; color: var(--color-text); }
+      .app-card-desc { font-size: 0.9375rem; color: var(--color-text-muted); line-height: 1.6; margin-bottom: var(--space-md); flex: 1; }
+      .app-card-meta { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); margin-top: auto; }
+      .app-category { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-secondary); }
+      .app-card .btn { font-size: 0.875rem; padding: var(--space-xs) var(--space-md); }
+      .marketplace-build { margin-top: var(--space-4xl); padding: var(--space-2xl); background: var(--gradient-accent-subtle); border: 1px solid var(--color-border); border-radius: var(--radius-xl); text-align: center; }
+      .marketplace-build h3 { font-size: 1.25rem; font-weight: 700; margin-bottom: var(--space-sm); color: var(--color-text); }
+      .marketplace-build p { font-size: 0.9375rem; color: var(--color-text-muted); margin-bottom: var(--space-lg); max-width: 40ch; margin-left: auto; margin-right: auto; }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <a href="/" class="logo">Probable</a>
+      <nav class="nav">
+        <a href="/#problem">The problem</a>
+        <a href="/#solution">The solution</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="case-studies.html">Case studies</a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="contact.html">Contact</a>
+        <a href="/#cta" class="nav-cta">Get early access</a>
+      </nav>
+      <button class="menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </header>
+
+    <main>
+      <section class="page-hero">
+        <p class="hero-eyebrow">Extend your workflows</p>
+        <h1 class="hero-title">App Marketplace</h1>
+        <p class="hero-subtitle">
+          Connect data sources, automation tools, and BI platforms. Build advanced probabilistic workflows that fit your stack.
+        </p>
+      </section>
+
+      <div class="marketplace">
+        <div class="marketplace-filters" role="tablist">
+          <button type="button" class="marketplace-filter active" data-category="all" role="tab">All</button>
+          <button type="button" class="marketplace-filter" data-category="data" role="tab">Data sources</button>
+          <button type="button" class="marketplace-filter" data-category="communication" role="tab">Communication</button>
+          <button type="button" class="marketplace-filter" data-category="automation" role="tab">Automation</button>
+          <button type="button" class="marketplace-filter" data-category="bi" role="tab">BI & dashboards</button>
+        </div>
+
+        <div class="marketplace-grid">
+          <article class="app-card" data-category="data">
+            <div class="app-card-header">
+              <div class="app-icon">G</div>
+              <h3>Google Sheets</h3>
+            </div>
+            <p class="app-card-desc">Import forecasts and probability distributions directly from Sheets. Auto-sync your spreadsheets as data sources.</p>
+            <div class="app-card-meta">
+              <span class="app-category">Data sources</span>
+              <a href="#cta" class="btn btn-primary">Connect</a>
+            </div>
+          </article>
+
+          <article class="app-card" data-category="data">
+            <div class="app-card-header">
+              <div class="app-icon">BQ</div>
+              <h3>BigQuery</h3>
+            </div>
+            <p class="app-card-desc">Query your data warehouse in real time. Run probabilistic models on BigQuery datasets and push results back.</p>
+            <div class="app-card-meta">
+              <span class="app-category">Data sources</span>
+              <a href="#cta" class="btn btn-primary">Connect</a>
+            </div>
+          </article>
+
+          <article class="app-card" data-category="data">
+            <div class="app-card-header">
+              <div class="app-icon">S</div>
+              <h3>Snowflake</h3>
+            </div>
+            <p class="app-card-desc">Connect to Snowflake for enterprise data. Pull time-series data for forecasting and write probability outputs.</p>
+            <div class="app-card-meta">
+              <span class="app-category">Data sources</span>
+              <a href="#cta" class="btn btn-primary">Connect</a>
+            </div>
+          </article>
+
+          <article class="app-card" data-category="data">
+            <div class="app-card-header">
+              <div class="app-icon">A</div>
+              <h3>Airtable</h3>
+            </div>
+            <p class="app-card-desc">Sync Airtable bases as forecast inputs. Map bases to datasets and keep your no-code workflows in sync.</p>
+            <div class="app-card-meta">
+              <span class="app-category">Data sources</span>
+              <a href="#cta" class="btn btn-primary">Connect</a>
+            </div>
+          </article>
+
+          <article class="app-card" data-category="communication">
+            <div class="app-card-header">
+              <div class="app-icon">S</div>
+              <h3>Slack</h3>
+            </div>
+            <p class="app-card-desc">Send forecast alerts and probability updates to channels. Get notified when confidence drops below thresholds.</p>
+            <div class="app-card-meta">
+              <span class="app-category">Communication</span>
+              <a href="#cta" class="btn btn-primary">Connect</a>
+            </div>
+          </article>
+
+          <article class="app-card" data-category="communication">
+            <div class="app-card-header">
+              <div class="app-icon">M</div>
+              <h3>Microsoft Teams</h3>
+            </div>
+            <p class="app-card-desc">Post forecast summaries and risk updates to Teams. Share probabilistic dashboards with your org.</p>
+            <div class="app-card-meta">
+              <span class="app-category">Communication</span>
+              <a href="#cta" class="btn btn-primary">Connect</a>
+            </div>
+          </article>
+
+          <article class="app-card" data-category="automation">
+            <div class="app-card-header">
+              <div class="app-icon">Z</div>
+              <h3>Zapier</h3>
+            </div>
+            <p class="app-card-desc">Trigger forecasts from any Zapier event. Send probability outputs to 5,000+ apps. Build chains without code.</p>
+            <div class="app-card-meta">
+              <span class="app-category">Automation</span>
+              <a href="#cta" class="btn btn-primary">Connect</a>
+            </div>
+          </article>
+
+          <article class="app-card" data-category="automation">
+            <div class="app-card-header">
+              <div class="app-icon">M</div>
+              <h3>Make</h3>
+            </div>
+            <p class="app-card-desc">Use Probable in Make scenarios. Run forecasts on schedule, transform outputs, and automate downstream workflows.</p>
+            <div class="app-card-meta">
+              <span class="app-category">Automation</span>
+              <a href="#cta" class="btn btn-primary">Connect</a>
+            </div>
+          </article>
+
+          <article class="app-card" data-category="automation">
+            <div class="app-card-header">
+              <div class="app-icon">n</div>
+              <h3>n8n</h3>
+            </div>
+            <p class="app-card-desc">Self-hosted automation. Connect Probable to n8n workflows for custom pipelines and on-premise integrations.</p>
+            <div class="app-card-meta">
+              <span class="app-category">Automation</span>
+              <a href="#cta" class="btn btn-primary">Connect</a>
+            </div>
+          </article>
+
+          <article class="app-card" data-category="bi">
+            <div class="app-card-header">
+              <div class="app-icon">L</div>
+              <h3>Looker</h3>
+            </div>
+            <p class="app-card-desc">Embed probability dashboards in Looker. Combine Probable forecasts with your existing BI reports.</p>
+            <div class="app-card-meta">
+              <span class="app-category">BI & dashboards</span>
+              <a href="#cta" class="btn btn-primary">Connect</a>
+            </div>
+          </article>
+
+          <article class="app-card" data-category="bi">
+            <div class="app-card-header">
+              <div class="app-icon">T</div>
+              <h3>Tableau</h3>
+            </div>
+            <p class="app-card-desc">Export forecast distributions to Tableau. Visualise confidence intervals and scenario analyses in your dashboards.</p>
+            <div class="app-card-meta">
+              <span class="app-category">BI & dashboards</span>
+              <a href="#cta" class="btn btn-primary">Connect</a>
+            </div>
+          </article>
+
+          <article class="app-card" data-category="bi">
+            <div class="app-card-header">
+              <div class="app-icon">P</div>
+              <h3>Power BI</h3>
+            </div>
+            <p class="app-card-desc">Push probabilistic metrics to Power BI. Build reports that show full outcome distributions, not just point estimates.</p>
+            <div class="app-card-meta">
+              <span class="app-category">BI & dashboards</span>
+              <a href="#cta" class="btn btn-primary">Connect</a>
+            </div>
+          </article>
+        </div>
+
+        <section class="marketplace-build">
+          <h3>Build your own integration</h3>
+          <p>Use our API to create custom connectors. Integrate with internal tools, custom data pipelines, or proprietary systems.</p>
+          <div style="display: flex; flex-wrap: wrap; gap: var(--space-md); justify-content: center;">
+            <a href="build-app.html" class="btn btn-primary">Apply to build an app</a>
+            <a href="api-docs.html" class="btn btn-ghost">View API docs</a>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <a href="/" class="logo">Probable</a>
+      <nav class="footer-nav">
+        <a href="pricing.html">Pricing</a>
+        <a href="case-studies.html">Case studies</a>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="build-app.html">Build an app</a>
+        <a href="contact.html">Contact</a>
+        <a href="api-docs.html">API Docs</a>
+      </nav>
+      <p class="footer-copy">© 2025 Probable. All rights reserved.</p>
+    </footer>
+
+    <script src="/scripts/main.js"></script>
+    <script>
+      (function() {
+        var filters = document.querySelectorAll('.marketplace-filter');
+        var cards = document.querySelectorAll('.app-card');
+        filters.forEach(function(f) {
+          f.addEventListener('click', function() {
+            var cat = f.dataset.category;
+            filters.forEach(function(x) { x.classList.remove('active'); });
+            f.classList.add('active');
+            cards.forEach(function(c) {
+              c.style.display = (cat === 'all' || c.dataset.category === cat) ? '' : 'none';
+            });
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

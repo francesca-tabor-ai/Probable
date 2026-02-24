@@ -101,6 +101,23 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 
+  // Build an App form — mailto
+  const buildAppForm = document.getElementById('build-app-form')
+  if (buildAppForm) {
+    buildAppForm.addEventListener('submit', (e) => {
+      e.preventDefault()
+      const email = buildAppForm.dataset.email || 'info@francescatabor.com'
+      const data = new FormData(buildAppForm)
+      const entries = Array.from(data.entries()).filter(([, v]) => v)
+      const body = entries.map(([k, v]) => `${k.replace(/_/g, ' ')}: ${v}`).join('\n')
+      const subject = encodeURIComponent('[Probable] Build an App Application')
+      window.location.href = `mailto:${email}?subject=${subject}&body=${encodeURIComponent(body)}`
+      const btn = buildAppForm.querySelector('button[type="submit"]')
+      btn.textContent = 'Application submitted'
+      btn.disabled = true
+    })
+  }
+
   // Contact form — mailto to info@francescatabor.com
   const contactForm = document.getElementById('contact-form')
   if (contactForm) {

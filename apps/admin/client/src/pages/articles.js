@@ -1,0 +1,28 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { useState } from "react";
+import { useArticles, useDeleteArticle } from "@/hooks/use-articles";
+import { PageHeader } from "@/components/page-header";
+import { StatusBadge } from "@/components/status-badge";
+import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ExternalLink, Trash2, Search, Filter } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
+export default function Articles() {
+    var _a = useState("all"), statusFilter = _a[0], setStatusFilter = _a[1];
+    var _b = useState(""), searchTerm = _b[0], setSearchTerm = _b[1];
+    var _c = useArticles(statusFilter !== "all" ? statusFilter : undefined), articles = _c.data, isLoading = _c.isLoading;
+    var deleteArticle = useDeleteArticle();
+    var filteredArticles = (articles === null || articles === void 0 ? void 0 : articles.filter(function (article) {
+        return article.title.toLowerCase().includes(searchTerm.toLowerCase());
+    })) || [];
+    return (_jsxs("div", { className: "p-6 md:p-8 max-w-7xl mx-auto", children: [_jsx(PageHeader, { title: "Articles Queue", description: "Raw indexed content awaiting processing by generative AI agents." }), _jsxs("div", { className: "bg-card rounded-xl border border-border/50 shadow-sm overflow-hidden mb-6", children: [_jsxs("div", { className: "p-4 border-b border-border/50 flex flex-col sm:flex-row items-start sm:items-center gap-4 bg-muted/20", children: [_jsxs("div", { className: "flex items-center gap-2 flex-1 w-full border rounded-md px-3 bg-background", children: [_jsx(Search, { className: "w-4 h-4 text-muted-foreground" }), _jsx(Input, { placeholder: "Search article titles...", className: "border-0 bg-transparent focus-visible:ring-0 shadow-none px-0 h-9", value: searchTerm, onChange: function (e) { return setSearchTerm(e.target.value); } })] }), _jsxs("div", { className: "flex items-center gap-2 w-full sm:w-auto", children: [_jsx(Filter, { className: "w-4 h-4 text-muted-foreground" }), _jsxs(Select, { value: statusFilter, onValueChange: setStatusFilter, children: [_jsx(SelectTrigger, { className: "w-[150px] bg-background", children: _jsx(SelectValue, { placeholder: "Filter by status" }) }), _jsxs(SelectContent, { children: [_jsx(SelectItem, { value: "all", children: "All Statuses" }), _jsx(SelectItem, { value: "pending", children: "Pending" }), _jsx(SelectItem, { value: "processing", children: "Processing" }), _jsx(SelectItem, { value: "complete", children: "Complete" }), _jsx(SelectItem, { value: "error", children: "Error" })] })] })] })] }), _jsxs(Table, { children: [_jsx(TableHeader, { children: _jsxs(TableRow, { className: "hover:bg-transparent", children: [_jsx(TableHead, { className: "w-1/2", children: "Title" }), _jsx(TableHead, { children: "Status" }), _jsx(TableHead, { children: "Topics" }), _jsx(TableHead, { children: "Fetched" }), _jsx(TableHead, { className: "text-right", children: "Actions" })] }) }), _jsx(TableBody, { children: isLoading ? (_jsx(TableRow, { children: _jsx(TableCell, { colSpan: 5, className: "text-center py-10 text-muted-foreground", children: "Loading articles..." }) })) : filteredArticles.length === 0 ? (_jsx(TableRow, { children: _jsx(TableCell, { colSpan: 5, className: "text-center py-10 text-muted-foreground", children: "No articles found in the queue." }) })) : (filteredArticles.map(function (article) {
+                                    var _a, _b;
+                                    return (_jsxs(TableRow, { className: "group transition-colors", children: [_jsx(TableCell, { className: "font-medium", children: _jsxs("div", { className: "flex items-start gap-2", children: [_jsx("span", { className: "line-clamp-2", children: article.title }), _jsx("a", { href: article.url, target: "_blank", rel: "noreferrer", className: "text-muted-foreground hover:text-primary transition-colors flex-shrink-0 mt-1", children: _jsx(ExternalLink, { className: "w-3 h-3" }) })] }) }), _jsx(TableCell, { children: _jsx(StatusBadge, { status: article.status }) }), _jsx(TableCell, { children: _jsxs("div", { className: "flex flex-wrap gap-1", children: [(_a = article.topics) === null || _a === void 0 ? void 0 : _a.slice(0, 2).map(function (topic) { return (_jsx("span", { className: "px-2 py-0.5 rounded-full bg-secondary text-xs text-secondary-foreground font-medium", children: topic }, topic)); }), ((_b = article.topics) === null || _b === void 0 ? void 0 : _b.length) > 2 && (_jsxs("span", { className: "px-2 py-0.5 rounded-full bg-secondary text-xs text-muted-foreground font-medium", children: ["+", article.topics.length - 2] }))] }) }), _jsx(TableCell, { className: "text-muted-foreground text-sm", children: article.fetchedAt ? format(new Date(article.fetchedAt), 'MMM d, h:mm a') : 'Unknown' }), _jsx(TableCell, { className: "text-right", children: _jsx(Button, { variant: "ghost", size: "icon", className: "text-muted-foreground hover:text-destructive hover:bg-destructive/10", onClick: function () {
+                                                        if (confirm('Are you sure you want to delete this article?')) {
+                                                            deleteArticle.mutate(article.id);
+                                                        }
+                                                    }, children: _jsx(Trash2, { className: "w-4 h-4" }) }) })] }, article.id));
+                                })) })] })] })] }));
+}

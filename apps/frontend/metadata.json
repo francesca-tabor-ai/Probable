@@ -1,0 +1,7 @@
+{
+  "name": "Probable.news - Autonomous Data Journalism",
+  "description": "An AI-native data journalism and forecasting desk that transforms news into structured datasets and probabilistic forecasts.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

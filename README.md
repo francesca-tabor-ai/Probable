@@ -60,6 +60,13 @@ The ROI comes from better resource allocation, fewer costly misses, and faster c
 npm install
 ```
 
+## Apps
+
+- **`apps/frontend`** — Probable.news React product UI (forecast cards, charts). Run: `cd apps/frontend && npm install && npm run dev`
+- **`apps/admin`** — Admin dashboard for feeds, articles, stories, forecasts, agents. Run: `cd apps/admin && npm install && npm run dev`
+
+The root `npm run dev` serves the main marketing landing (static HTML). The API runs separately (`Dockerfile.api`).
+
 ## Development
 
 ```bash
@@ -79,3 +86,13 @@ Output goes to the `dist/` folder. Preview the production build with:
 ```bash
 npm run preview
 ```
+
+## Deploy Backend (Railway + PostgreSQL)
+
+1. **Create a Railway project** and add a **PostgreSQL** database.
+2. **New Service** → Deploy from GitHub → Select this repo.
+3. Link the PostgreSQL service to your API service (Railway will inject `DATABASE_URL`).
+4. **Generate domain** in Settings → Networking.
+5. Optional: Add `OPENAI_API_KEY` and other vars in Variables.
+
+The `railway.json` and `Dockerfile.api` are pre-configured. Railway auto-converts `postgresql://` to `postgresql+asyncpg://` for async SQLAlchemy.
