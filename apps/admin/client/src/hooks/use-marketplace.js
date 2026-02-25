@@ -35,115 +35,102 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api, buildUrl } from "@shared/routes";
-export function useFeeds() {
+var APPS_API = "/api/marketplace/apps";
+var INTEGRATIONS_API = "/api/marketplace/integrations";
+export function useMarketplaceApps(category) {
     var _this = this;
+    var url = category ? "".concat(APPS_API, "?category=").concat(category) : APPS_API;
     return useQuery({
-        queryKey: [api.feeds.list.path],
+        queryKey: ["marketplace-apps", category],
         queryFn: function () { return __awaiter(_this, void 0, void 0, function () {
-            var res, data;
+            var res;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch(api.feeds.list.path, { credentials: "include" })];
+                    case 0: return [4 /*yield*/, fetch(url, { credentials: "include" })];
                     case 1:
                         res = _a.sent();
                         if (!res.ok)
-                            throw new Error("Failed to fetch feeds");
-                        return [4 /*yield*/, res.json()];
-                    case 2:
-                        data = _a.sent();
-                        return [2 /*return*/, api.feeds.list.responses[200].parse(data)];
+                            throw new Error("Failed to fetch apps");
+                        return [2 /*return*/, res.json()];
                 }
             });
         }); },
     });
 }
-export function useCreateFeed() {
+export function useUserIntegrations() {
     var _this = this;
-    var queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: function (data) { return __awaiter(_this, void 0, void 0, function () {
+    return useQuery({
+        queryKey: [INTEGRATIONS_API],
+        queryFn: function () { return __awaiter(_this, void 0, void 0, function () {
             var res;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch(api.feeds.create.path, {
-                            method: api.feeds.create.method,
+                    case 0: return [4 /*yield*/, fetch(INTEGRATIONS_API, { credentials: "include" })];
+                    case 1:
+                        res = _a.sent();
+                        if (res.status === 401)
+                            return [2 /*return*/, []];
+                        if (!res.ok)
+                            throw new Error("Failed to fetch integrations");
+                        return [2 /*return*/, res.json()];
+                }
+            });
+        }); },
+        retry: false,
+    });
+}
+export function useConnectIntegration() {
+    var _this = this;
+    var qc = useQueryClient();
+    return useMutation({
+        mutationFn: function (data) { return __awaiter(_this, void 0, void 0, function () {
+            var res, err;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, fetch(INTEGRATIONS_API, {
+                            method: "POST",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify(data),
                             credentials: "include",
                         })];
                     case 1:
                         res = _a.sent();
-                        if (!res.ok)
-                            throw new Error("Failed to create feed");
-                        return [4 /*yield*/, res.json()];
-                    case 2: return [2 /*return*/, _a.sent()];
+                        if (!!res.ok) return [3 /*break*/, 3];
+                        return [4 /*yield*/, res.json().catch(function () { return ({}); })];
+                    case 2:
+                        err = _a.sent();
+                        throw new Error(err.detail || "Failed to connect");
+                    case 3: return [2 /*return*/, res.json()];
                 }
             });
         }); },
         onSuccess: function () {
-            queryClient.invalidateQueries({ queryKey: [api.feeds.list.path] });
-            queryClient.invalidateQueries({ queryKey: [api.dashboard.stats.path] });
+            qc.invalidateQueries({ queryKey: [INTEGRATIONS_API] });
         },
     });
 }
-export function useUpdateFeed() {
+export function useDisconnectIntegration() {
     var _this = this;
-    var queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: function (_a) { return __awaiter(_this, [_a], void 0, function (_b) {
-            var url, res;
-            var id = _b.id, data = _b.data;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
-                    case 0:
-                        url = buildUrl(api.feeds.update.path, { id: id });
-                        return [4 /*yield*/, fetch(url, {
-                                method: api.feeds.update.method,
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify(data),
-                                credentials: "include",
-                            })];
-                    case 1:
-                        res = _c.sent();
-                        if (!res.ok)
-                            throw new Error("Failed to update feed");
-                        return [4 /*yield*/, res.json()];
-                    case 2: return [2 /*return*/, _c.sent()];
-                }
-            });
-        }); },
-        onSuccess: function () {
-            queryClient.invalidateQueries({ queryKey: [api.feeds.list.path] });
-            queryClient.invalidateQueries({ queryKey: [api.dashboard.stats.path] });
-        },
-    });
-}
-export function useDeleteFeed() {
-    var _this = this;
-    var queryClient = useQueryClient();
+    var qc = useQueryClient();
     return useMutation({
         mutationFn: function (id) { return __awaiter(_this, void 0, void 0, function () {
-            var url, res;
+            var res;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        url = buildUrl(api.feeds.delete.path, { id: id });
-                        return [4 /*yield*/, fetch(url, {
-                                method: api.feeds.delete.method,
-                                credentials: "include",
-                            })];
+                    case 0: return [4 /*yield*/, fetch("".concat(INTEGRATIONS_API, "/").concat(id), {
+                            method: "DELETE",
+                            credentials: "include",
+                        })];
                     case 1:
                         res = _a.sent();
                         if (!res.ok)
-                            throw new Error("Failed to delete feed");
+                            throw new Error("Failed to disconnect");
                         return [2 /*return*/];
                 }
             });
         }); },
         onSuccess: function () {
-            queryClient.invalidateQueries({ queryKey: [api.feeds.list.path] });
-            queryClient.invalidateQueries({ queryKey: [api.dashboard.stats.path] });
+            qc.invalidateQueries({ queryKey: [INTEGRATIONS_API] });
         },
     });
 }

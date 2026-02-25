@@ -95,7 +95,8 @@ class ForecastCreate(BaseModel):
 class ForecastUpdate(BaseModel):
     topic: Optional[str] = None
     target: Optional[str] = None
-    probability: Optional[float] = None
+    probability: Optional[float] = None  # 0-100 or 0-1, normalized in handler
+    horizon: Optional[str] = None
     confidence: Optional[str] = None
     status: Optional[str] = None
     scenarios: Optional[list] = None

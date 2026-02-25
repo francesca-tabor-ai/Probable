@@ -429,15 +429,18 @@ async def forecasts_update(id: int, data: ForecastUpdate, db: DbSession):
         spec.topic = data.topic
     if data.target is not None:
         spec.target = data.target
+    if data.horizon is not None:
+        spec.horizon = data.horizon
     if data.status is not None:
         pass  # spec doesn't have status, could add
     if data.probability is not None:
+        prob = data.probability / 100.0 if data.probability > 1 else data.probability
         run_r = await db.execute(
             select(ForecastRun).where(ForecastRun.forecast_spec_id == spec.id).order_by(ForecastRun.run_at.desc()).limit(1)
         )
         run = run_r.scalar_one_or_none()
         if run:
-            run.result = {**(run.result or {}), "point_estimate": data.probability, "probability": data.probability}
+            run.result = {**(run.result or {}), "point_estimate": prob, "probability": prob}
     await db.flush()
     await db.refresh(spec)
     return await _forecast_to_response(db, spec)
@@ -543,6 +546,28 @@ async def datasets_list(db: DbSession, topic: Optional[str] = Query(None)):
         q = q.where(Dataset.topic == topic)
     result = await db.execute(q)
     return [{"id": d.id, "articleId": d.article_id, "topic": d.topic, "source": d.source, "createdAt": d.created_at.isoformat() if d.created_at else None} for d in result.scalars().all()]
+
+
+class DatasetCreate(BaseModel):
+    articleId: Optional[int] = None
+    topic: str
+    data: dict = Field(default_factory=dict)
+    source: str = "Admin"
+
+
+@router.post("/datasets", status_code=201)
+async def datasets_create(data: DatasetCreate, db: DbSession):
+    """Create dataset."""
+    d = Dataset(
+        article_id=data.articleId,
+        topic=data.topic,
+        data=data.data,
+        source=data.source,
+    )
+    db.add(d)
+    await db.flush()
+    await db.refresh(d)
+    return {"id": d.id, "articleId": d.article_id, "topic": d.topic, "source": d.source, "createdAt": d.created_at.isoformat() if d.created_at else None}
 
 
 @router.get("/datasets/{id}")

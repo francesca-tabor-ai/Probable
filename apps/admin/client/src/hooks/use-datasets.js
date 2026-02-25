@@ -34,28 +34,80 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { useQuery } from "@tanstack/react-query";
-import { api } from "@shared/routes";
-import { authFetch } from "@/lib/auth-api";
-export function useDashboardStats() {
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+var API = "/api/datasets";
+export function useDatasets(topic) {
     var _this = this;
+    var url = topic ? "".concat(API, "?topic=").concat(encodeURIComponent(topic)) : API;
     return useQuery({
-        queryKey: [api.dashboard.stats.path],
+        queryKey: [API, topic],
         queryFn: function () { return __awaiter(_this, void 0, void 0, function () {
-            var res, data;
+            var res;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, authFetch(api.dashboard.stats.path)];
+                    case 0: return [4 /*yield*/, fetch(url, { credentials: "include" })];
                     case 1:
                         res = _a.sent();
                         if (!res.ok)
-                            throw new Error("Failed to fetch dashboard stats");
-                        return [4 /*yield*/, res.json()];
-                    case 2:
-                        data = _a.sent();
-                        return [2 /*return*/, api.dashboard.stats.responses[200].parse(data)];
+                            throw new Error("Failed to fetch datasets");
+                        return [2 /*return*/, res.json()];
                 }
             });
         }); },
+    });
+}
+export function useCreateDataset() {
+    var _this = this;
+    var qc = useQueryClient();
+    return useMutation({
+        mutationFn: function (data) { return __awaiter(_this, void 0, void 0, function () {
+            var res;
+            var _a, _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0: return [4 /*yield*/, fetch(API, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                topic: data.topic,
+                                source: (_a = data.source) !== null && _a !== void 0 ? _a : "Admin",
+                                data: (_b = data.data) !== null && _b !== void 0 ? _b : {},
+                                articleId: (_c = data.articleId) !== null && _c !== void 0 ? _c : null,
+                            }),
+                            credentials: "include",
+                        })];
+                    case 1:
+                        res = _d.sent();
+                        if (!res.ok)
+                            throw new Error("Failed to create dataset");
+                        return [2 /*return*/, res.json()];
+                }
+            });
+        }); },
+        onSuccess: function () {
+            qc.invalidateQueries({ queryKey: [API] });
+        },
+    });
+}
+export function useDeleteDataset() {
+    var _this = this;
+    var qc = useQueryClient();
+    return useMutation({
+        mutationFn: function (id) { return __awaiter(_this, void 0, void 0, function () {
+            var res;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, fetch("".concat(API, "/").concat(id), { method: "DELETE", credentials: "include" })];
+                    case 1:
+                        res = _a.sent();
+                        if (!res.ok)
+                            throw new Error("Failed to delete");
+                        return [2 /*return*/];
+                }
+            });
+        }); },
+        onSuccess: function () {
+            qc.invalidateQueries({ queryKey: [API] });
+        },
     });
 }

@@ -1,3 +1,14 @@
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,6 +46,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { QueryClient } from "@tanstack/react-query";
+import { getAuthToken } from "@/lib/auth-api";
 function throwIfResNotOk(res) {
     return __awaiter(this, void 0, void 0, function () {
         var text;
@@ -51,6 +63,13 @@ function throwIfResNotOk(res) {
         });
     });
 }
+function authHeaders(extra) {
+    var token = getAuthToken();
+    var headers = __assign({}, extra);
+    if (token)
+        headers["Authorization"] = "Bearer ".concat(token);
+    return headers;
+}
 export function apiRequest(method, url, data) {
     return __awaiter(this, void 0, void 0, function () {
         var res;
@@ -58,7 +77,7 @@ export function apiRequest(method, url, data) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, fetch(url, {
                         method: method,
-                        headers: data ? { "Content-Type": "application/json" } : {},
+                        headers: authHeaders(data ? { "Content-Type": "application/json" } : {}),
                         body: data ? JSON.stringify(data) : undefined,
                         credentials: "include",
                     })];
@@ -81,6 +100,7 @@ export var getQueryFn = function (_a) {
             switch (_c.label) {
                 case 0: return [4 /*yield*/, fetch(queryKey.join("/"), {
                         credentials: "include",
+                        headers: authHeaders(),
                     })];
                 case 1:
                     res = _c.sent();

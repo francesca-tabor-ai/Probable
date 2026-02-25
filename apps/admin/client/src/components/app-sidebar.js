@@ -1,6 +1,6 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { Link, useLocation } from "wouter";
-import { LayoutDashboard, Rss, FileText, BookOpen, TrendingUp, Cpu } from "lucide-react";
+import { LayoutDashboard, Rss, FileText, BookOpen, TrendingUp, Cpu, Database, Table2, Users, Plug2 } from "lucide-react";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, } from "@/components/ui/sidebar";
 var mainNavItems = [
     { title: "Dashboard", url: "/", icon: LayoutDashboard },
@@ -8,6 +8,10 @@ var mainNavItems = [
     { title: "Articles Queue", url: "/articles", icon: FileText },
     { title: "Stories", url: "/stories", icon: BookOpen },
     { title: "Forecasts", url: "/forecasts", icon: TrendingUp },
+    { title: "Data Sources", url: "/data-sources", icon: Database },
+    { title: "Datasets", url: "/datasets", icon: Table2 },
+    { title: "Integrations", url: "/integrations", icon: Plug2 },
+    { title: "Users", url: "/users", icon: Users },
     { title: "Agents", url: "/agents", icon: Cpu },
 ];
 export function AppSidebar() {

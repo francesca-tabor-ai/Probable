@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useArticles, useDeleteArticle } from "@/hooks/use-articles";
+import { useArticles, useUpdateArticle, useDeleteArticle } from "@/hooks/use-articles";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
@@ -12,22 +12,72 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { ExternalLink, Trash2, Search, Filter } from "lucide-react";
+import { ExternalLink, Trash2, Search, Filter, Pencil } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Articles() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [editing, setEditing] = useState<{ id: number; title: string; url: string; content?: string; topics?: string[]; entities?: string[] } | null>(null);
+  const [formData, setFormData] = useState({ title: "", url: "", content: "", topics: "", entities: "" });
   
   const { data: articles, isLoading } = useArticles(statusFilter !== "all" ? statusFilter : undefined);
+  const updateArticle = useUpdateArticle();
   const deleteArticle = useDeleteArticle();
+  const { toast } = useToast();
+
+  const handleUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editing) return;
+    updateArticle.mutate(
+      {
+        id: editing.id,
+        data: {
+          title: formData.title,
+          url: formData.url,
+          content: formData.content || undefined,
+          topics: formData.topics ? formData.topics.split(",").map((s) => s.trim()).filter(Boolean) : undefined,
+          entities: formData.entities ? formData.entities.split(",").map((s) => s.trim()).filter(Boolean) : undefined,
+        },
+      },
+      {
+        onSuccess: () => {
+          setEditing(null);
+          toast({ title: "Article updated" });
+        },
+        onError: (err) => toast({ title: "Error", description: err.message, variant: "destructive" }),
+      }
+    );
+  };
+
+  const openEdit = (article: { id: number; title: string; url: string; content?: string; topics?: string[]; entities?: string[] }) => {
+    setEditing(article);
+    setFormData({
+      title: article.title,
+      url: article.url,
+      content: article.content ?? "",
+      topics: article.topics?.join(", ") ?? "",
+      entities: article.entities?.join(", ") ?? "",
+    });
+  };
 
   const filteredArticles = articles?.filter((article: any) => 
     article.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -121,6 +171,9 @@ export default function Articles() {
                     {article.fetchedAt ? format(new Date(article.fetchedAt), 'MMM d, h:mm a') : 'Unknown'}
                   </TableCell>
                   <TableCell className="text-right">
+                    <Button variant="ghost" size="icon" onClick={() => openEdit(article)}>
+                      <Pencil className="w-4 h-4" />
+                    </Button>
                     <Button 
                       variant="ghost" 
                       size="icon" 
@@ -140,6 +193,45 @@ export default function Articles() {
           </TableBody>
         </Table>
       </div>
+
+      {editing && (
+        <Dialog open={!!editing} onOpenChange={() => setEditing(null)}>
+          <DialogContent className="sm:max-w-[600px]">
+            <form onSubmit={handleUpdate}>
+              <DialogHeader>
+                <DialogTitle>Edit Article</DialogTitle>
+                <DialogDescription>Update the article details. Content is truncated in list; full body may need a refresh.</DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <Label>Title</Label>
+                  <Input value={formData.title} onChange={(e) => setFormData({ ...formData, title: e.target.value })} required />
+                </div>
+                <div className="grid gap-2">
+                  <Label>URL</Label>
+                  <Input value={formData.url} onChange={(e) => setFormData({ ...formData, url: e.target.value })} required />
+                </div>
+                <div className="grid gap-2">
+                  <Label>Content (excerpt)</Label>
+                  <Textarea value={formData.content} onChange={(e) => setFormData({ ...formData, content: e.target.value })} rows={4} />
+                </div>
+                <div className="grid gap-2">
+                  <Label>Topics (comma-separated)</Label>
+                  <Input value={formData.topics} onChange={(e) => setFormData({ ...formData, topics: e.target.value })} placeholder="politics, uk-election" />
+                </div>
+                <div className="grid gap-2">
+                  <Label>Entities (comma-separated)</Label>
+                  <Input value={formData.entities} onChange={(e) => setFormData({ ...formData, entities: e.target.value })} placeholder="Labour, Conservative" />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setEditing(null)}>Cancel</Button>
+                <Button type="submit" disabled={updateArticle.isPending}>{updateArticle.isPending ? "Saving..." : "Save"}</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

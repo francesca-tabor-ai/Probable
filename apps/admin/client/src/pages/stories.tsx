@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useStories, useCreateStory, useDeleteStory, usePublishStory } from "@/hooks/use-stories";
+import { useStories, useCreateStory, useUpdateStory, useDeleteStory, usePublishStory } from "@/hooks/use-stories";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
@@ -15,17 +15,19 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { FileText, Trash2, Send, Clock, Plus } from "lucide-react";
+import { FileText, Trash2, Send, Clock, Plus, Pencil } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Stories() {
   const { data: stories, isLoading } = useStories();
   const createStory = useCreateStory();
+  const updateStory = useUpdateStory();
   const deleteStory = useDeleteStory();
   const publishStory = usePublishStory();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({ title: "", content: "", summary: "" });
+  const [editing, setEditing] = useState<{ id: number; title: string; content: string; summary?: string; status: string } | null>(null);
+  const [form, setForm] = useState({ title: "", content: "", summary: "", status: "draft" });
 
   const handlePublish = (id: number) => {
     publishStory.mutate(id, {
@@ -40,12 +42,27 @@ export default function Stories() {
     }
   };
 
+  const handleUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editing) return;
+    updateStory.mutate(
+      { id: editing.id, data: { title: form.title, content: form.content, summary: form.summary || undefined, status: form.status } },
+      {
+        onSuccess: () => {
+          setEditing(null);
+          toast({ title: "Story updated" });
+        },
+        onError: (err: Error) => toast({ title: "Error", description: err.message, variant: "destructive" }),
+      }
+    );
+  };
+
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
-    createStory.mutate({ title: form.title, content: form.content, summary: form.summary || undefined }, {
+    createStory.mutate({ title: form.title, content: form.content, summary: form.summary || undefined, status: "draft" }, {
       onSuccess: () => {
         setOpen(false);
-        setForm({ title: "", content: "", summary: "" });
+        setForm({ title: "", content: "", summary: "", status: "draft" });
         toast({ title: "Story created" });
       },
       onError: (err: Error) => toast({ title: "Error", description: err.message, variant: "destructive" }),
@@ -131,14 +148,19 @@ export default function Stories() {
                 )}
               </CardContent>
               <CardFooter className="pt-3 border-t border-border/50 flex justify-between bg-muted/10">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                  onClick={() => handleDelete(story.id)}
-                >
-                  <Trash2 className="w-4 h-4 mr-2" /> Delete
-                </Button>
+                <div className="flex gap-2">
+                  <Button variant="ghost" size="sm" onClick={() => { setEditing(story); setForm({ title: story.title, content: story.content || "", summary: story.summary || "", status: story.status }); }}>
+                    <Pencil className="w-4 h-4 mr-2" /> Edit
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    onClick={() => handleDelete(story.id)}
+                  >
+                    <Trash2 className="w-4 h-4 mr-2" /> Delete
+                  </Button>
+                </div>
                 {story.status !== 'published' && (
                   <Button 
                     size="sm" 
@@ -153,6 +175,41 @@ export default function Stories() {
             </Card>
           ))}
         </div>
+      )}
+
+      {editing && (
+        <Dialog open={!!editing} onOpenChange={() => setEditing(null)}>
+          <DialogContent>
+            <form onSubmit={handleUpdate}>
+              <DialogHeader>
+                <DialogTitle>Edit Story</DialogTitle>
+                <DialogDescription>Update the story content and status.</DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <Label>Title</Label>
+                  <Input value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} required />
+                </div>
+                <div className="grid gap-2">
+                  <Label>Summary</Label>
+                  <Input value={form.summary} onChange={(e) => setForm((f) => ({ ...f, summary: e.target.value }))} placeholder="Optional" />
+                </div>
+                <div className="grid gap-2">
+                  <Label>Content</Label>
+                  <Textarea value={form.content} onChange={(e) => setForm((f) => ({ ...f, content: e.target.value }))} rows={5} required />
+                </div>
+                <div className="grid gap-2">
+                  <Label>Status</Label>
+                  <Input value={form.status} onChange={(e) => setForm((f) => ({ ...f, status: e.target.value }))} placeholder="draft | published" />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setEditing(null)}>Cancel</Button>
+                <Button type="submit" disabled={updateStory.isPending}>{updateStory.isPending ? "Saving..." : "Save"}</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );

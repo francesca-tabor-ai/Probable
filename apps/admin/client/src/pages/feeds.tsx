@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useFeeds, useCreateFeed, useDeleteFeed } from "@/hooks/use-feeds";
+import { useFeeds, useCreateFeed, useUpdateFeed, useDeleteFeed } from "@/hooks/use-feeds";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
@@ -23,22 +23,25 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus, Trash2, Search, ExternalLink } from "lucide-react";
+import { Plus, Trash2, Search, ExternalLink, Pencil } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Feeds() {
   const { data: feeds, isLoading } = useFeeds();
   const createFeed = useCreateFeed();
+  const updateFeed = useUpdateFeed();
   const deleteFeed = useDeleteFeed();
   const { toast } = useToast();
   
   const [isOpen, setIsOpen] = useState(false);
+  const [editing, setEditing] = useState<{ id: number; name: string; url: string; category: string; status: string } | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   
   const [formData, setFormData] = useState({
     name: "",
     url: "",
     category: "",
+    status: "active",
   });
 
   const filteredFeeds = feeds?.filter((feed: any) => 
@@ -51,13 +54,34 @@ export default function Feeds() {
     createFeed.mutate(formData, {
       onSuccess: () => {
         setIsOpen(false);
-        setFormData({ name: "", url: "", category: "" });
+        setFormData({ name: "", url: "", category: "", status: "active" });
         toast({ title: "Success", description: "RSS Feed added successfully." });
       },
       onError: (err) => {
         toast({ title: "Error", description: err.message, variant: "destructive" });
       }
     });
+  };
+
+  const handleUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editing) return;
+    updateFeed.mutate(
+      { id: editing.id, data: { name: formData.name, url: formData.url, category: formData.category, status: formData.status } },
+      {
+        onSuccess: () => {
+          setEditing(null);
+          setFormData({ name: "", url: "", category: "", status: "active" });
+          toast({ title: "Success", description: "Feed updated." });
+        },
+        onError: (err) => toast({ title: "Error", description: err.message, variant: "destructive" }),
+      }
+    );
+  };
+
+  const openEdit = (feed: { id: number; name: string; url: string; category: string; status: string }) => {
+    setEditing(feed);
+    setFormData({ name: feed.name, url: feed.url, category: feed.category, status: feed.status });
   };
 
   return (
@@ -123,6 +147,64 @@ export default function Feeds() {
         </Dialog>
       </PageHeader>
 
+      {editing && (
+        <Dialog open={!!editing} onOpenChange={() => setEditing(null)}>
+          <DialogContent className="sm:max-w-[425px]">
+            <form onSubmit={handleUpdate}>
+              <DialogHeader>
+                <DialogTitle>Edit Feed</DialogTitle>
+                <DialogDescription>Update the RSS feed details.</DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-name">Feed Name</Label>
+                  <Input 
+                    id="edit-name" 
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-url">RSS URL</Label>
+                  <Input 
+                    id="edit-url" 
+                    type="url" 
+                    value={formData.url}
+                    onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-category">Category</Label>
+                  <Input 
+                    id="edit-category" 
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-status">Status</Label>
+                  <Input 
+                    id="edit-status" 
+                    value={formData.status}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                    placeholder="active | paused | error"
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setEditing(null)}>Cancel</Button>
+                <Button type="submit" disabled={updateFeed.isPending}>
+                  {updateFeed.isPending ? "Saving..." : "Save"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+      )}
+
       <div className="bg-card rounded-xl border border-border/50 shadow-sm overflow-hidden">
         <div className="p-4 border-b border-border/50 flex items-center gap-2 bg-muted/20">
           <Search className="w-4 h-4 text-muted-foreground" />
@@ -178,6 +260,9 @@ export default function Feeds() {
                     {feed.lastFetched ? format(new Date(feed.lastFetched), 'MMM d, h:mm a') : 'Never'}
                   </TableCell>
                   <TableCell className="text-right">
+                    <Button variant="ghost" size="icon" onClick={() => openEdit(feed)}>
+                      <Pencil className="w-4 h-4" />
+                    </Button>
                     <Button 
                       variant="ghost" 
                       size="icon" 

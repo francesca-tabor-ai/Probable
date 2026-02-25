@@ -14,6 +14,30 @@ export function useDatasets(topic?: string) {
   });
 }
 
+export function useCreateDataset() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: { topic: string; source?: string; data?: Record<string, unknown>; articleId?: number }) => {
+      const res = await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          topic: data.topic,
+          source: data.source ?? "Admin",
+          data: data.data ?? {},
+          articleId: data.articleId ?? null,
+        }),
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to create dataset");
+      return res.json();
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: [API] });
+    },
+  });
+}
+
 export function useDeleteDataset() {
   const qc = useQueryClient();
   return useMutation({

@@ -33,6 +33,27 @@ export function useCreateFeed() {
   });
 }
 
+export function useUpdateFeed() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: UpdateRssFeedInput }) => {
+      const url = buildUrl(api.feeds.update.path, { id });
+      const res = await fetch(url, {
+        method: api.feeds.update.method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to update feed");
+      return await res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [api.feeds.list.path] });
+      queryClient.invalidateQueries({ queryKey: [api.dashboard.stats.path] });
+    },
+  });
+}
+
 export function useDeleteFeed() {
   const queryClient = useQueryClient();
   return useMutation({

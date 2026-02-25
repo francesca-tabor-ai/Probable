@@ -35,39 +35,36 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { api, buildUrl } from "@shared/routes";
-export function useFeeds() {
+var API = "/api/data-sources";
+export function useDataSources() {
     var _this = this;
     return useQuery({
-        queryKey: [api.feeds.list.path],
+        queryKey: [API],
         queryFn: function () { return __awaiter(_this, void 0, void 0, function () {
-            var res, data;
+            var res;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch(api.feeds.list.path, { credentials: "include" })];
+                    case 0: return [4 /*yield*/, fetch(API, { credentials: "include" })];
                     case 1:
                         res = _a.sent();
                         if (!res.ok)
-                            throw new Error("Failed to fetch feeds");
-                        return [4 /*yield*/, res.json()];
-                    case 2:
-                        data = _a.sent();
-                        return [2 /*return*/, api.feeds.list.responses[200].parse(data)];
+                            throw new Error("Failed to fetch data sources");
+                        return [2 /*return*/, res.json()];
                 }
             });
         }); },
     });
 }
-export function useCreateFeed() {
+export function useCreateDataSource() {
     var _this = this;
-    var queryClient = useQueryClient();
+    var qc = useQueryClient();
     return useMutation({
         mutationFn: function (data) { return __awaiter(_this, void 0, void 0, function () {
             var res;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, fetch(api.feeds.create.path, {
-                            method: api.feeds.create.method,
+                    case 0: return [4 /*yield*/, fetch(API, {
+                            method: "POST",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify(data),
                             credentials: "include",
@@ -75,75 +72,63 @@ export function useCreateFeed() {
                     case 1:
                         res = _a.sent();
                         if (!res.ok)
-                            throw new Error("Failed to create feed");
-                        return [4 /*yield*/, res.json()];
-                    case 2: return [2 /*return*/, _a.sent()];
+                            throw new Error("Failed to create");
+                        return [2 /*return*/, res.json()];
                 }
             });
         }); },
         onSuccess: function () {
-            queryClient.invalidateQueries({ queryKey: [api.feeds.list.path] });
-            queryClient.invalidateQueries({ queryKey: [api.dashboard.stats.path] });
+            qc.invalidateQueries({ queryKey: [API] });
         },
     });
 }
-export function useUpdateFeed() {
+export function useUpdateDataSource() {
     var _this = this;
-    var queryClient = useQueryClient();
+    var qc = useQueryClient();
     return useMutation({
         mutationFn: function (_a) { return __awaiter(_this, [_a], void 0, function (_b) {
-            var url, res;
+            var res;
             var id = _b.id, data = _b.data;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0:
-                        url = buildUrl(api.feeds.update.path, { id: id });
-                        return [4 /*yield*/, fetch(url, {
-                                method: api.feeds.update.method,
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify(data),
-                                credentials: "include",
-                            })];
+                    case 0: return [4 /*yield*/, fetch("".concat(API, "/").concat(id), {
+                            method: "PUT",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(data),
+                            credentials: "include",
+                        })];
                     case 1:
                         res = _c.sent();
                         if (!res.ok)
-                            throw new Error("Failed to update feed");
-                        return [4 /*yield*/, res.json()];
-                    case 2: return [2 /*return*/, _c.sent()];
+                            throw new Error("Failed to update");
+                        return [2 /*return*/, res.json()];
                 }
             });
         }); },
         onSuccess: function () {
-            queryClient.invalidateQueries({ queryKey: [api.feeds.list.path] });
-            queryClient.invalidateQueries({ queryKey: [api.dashboard.stats.path] });
+            qc.invalidateQueries({ queryKey: [API] });
         },
     });
 }
-export function useDeleteFeed() {
+export function useDeleteDataSource() {
     var _this = this;
-    var queryClient = useQueryClient();
+    var qc = useQueryClient();
     return useMutation({
         mutationFn: function (id) { return __awaiter(_this, void 0, void 0, function () {
-            var url, res;
+            var res;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        url = buildUrl(api.feeds.delete.path, { id: id });
-                        return [4 /*yield*/, fetch(url, {
-                                method: api.feeds.delete.method,
-                                credentials: "include",
-                            })];
+                    case 0: return [4 /*yield*/, fetch("".concat(API, "/").concat(id), { method: "DELETE", credentials: "include" })];
                     case 1:
                         res = _a.sent();
                         if (!res.ok)
-                            throw new Error("Failed to delete feed");
+                            throw new Error("Failed to delete");
                         return [2 /*return*/];
                 }
             });
         }); },
         onSuccess: function () {
-            queryClient.invalidateQueries({ queryKey: [api.feeds.list.path] });
-            queryClient.invalidateQueries({ queryKey: [api.dashboard.stats.path] });
+            qc.invalidateQueries({ queryKey: [API] });
         },
     });
 }

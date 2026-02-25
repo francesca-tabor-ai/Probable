@@ -87,6 +87,38 @@ export function useCreateForecast() {
         },
     });
 }
+export function useUpdateForecast() {
+    var _this = this;
+    var queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: function (_a) { return __awaiter(_this, [_a], void 0, function (_b) {
+            var url, res;
+            var id = _b.id, data = _b.data;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        url = buildUrl(api.forecasts.update.path, { id: id });
+                        return [4 /*yield*/, fetch(url, {
+                                method: api.forecasts.update.method,
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify(data),
+                                credentials: "include",
+                            })];
+                    case 1:
+                        res = _c.sent();
+                        if (!res.ok)
+                            throw new Error("Failed to update forecast");
+                        return [4 /*yield*/, res.json()];
+                    case 2: return [2 /*return*/, _c.sent()];
+                }
+            });
+        }); },
+        onSuccess: function () {
+            queryClient.invalidateQueries({ queryKey: [api.forecasts.list.path] });
+            queryClient.invalidateQueries({ queryKey: [api.dashboard.stats.path] });
+        },
+    });
+}
 export function useDeleteForecast() {
     var _this = this;
     var queryClient = useQueryClient();

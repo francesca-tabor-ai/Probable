@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useForecasts, useCreateForecast, useDeleteForecast } from "@/hooks/use-forecasts";
+import { useForecasts, useCreateForecast, useUpdateForecast, useDeleteForecast } from "@/hooks/use-forecasts";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
@@ -14,17 +14,34 @@ import {
   TableRow 
 } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Trash2, Plus } from "lucide-react";
+import { Trash2, Plus, Pencil } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Forecasts() {
   const { data: forecasts, isLoading } = useForecasts();
   const createForecast = useCreateForecast();
+  const updateForecast = useUpdateForecast();
   const deleteForecast = useDeleteForecast();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<{ id: number; topic: string; target: string; probability: number; horizon?: string; status: string } | null>(null);
   const [form, setForm] = useState({ topic: "politics", target: "", probability: 50, horizon: "" });
+
+  const handleUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editing) return;
+    updateForecast.mutate(
+      { id: editing.id, data: { topic: form.topic, target: form.target, probability: form.probability, horizon: form.horizon || undefined } },
+      {
+        onSuccess: () => {
+          setEditing(null);
+          toast({ title: "Forecast updated" });
+        },
+        onError: (err: Error) => toast({ title: "Error", description: err.message, variant: "destructive" }),
+      }
+    );
+  };
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,6 +52,7 @@ export default function Forecasts() {
       confidence: "medium",
       modelType: "baseline",
       horizon: form.horizon || undefined,
+      status: "active",
     }, {
       onSuccess: () => {
         setOpen(false);
@@ -145,6 +163,9 @@ export default function Forecasts() {
                   <TableCell className="text-sm">{forecast.modelType}</TableCell>
                   <TableCell><StatusBadge status={forecast.status} /></TableCell>
                   <TableCell className="text-right">
+                    <Button variant="ghost" size="icon" onClick={() => { setEditing(forecast); setForm({ topic: forecast.topic, target: forecast.target, probability: forecast.probability, horizon: forecast.horizon || "" }); }}>
+                      <Pencil className="w-4 h-4" />
+                    </Button>
                     <Button 
                       variant="ghost" 
                       size="icon" 
@@ -164,6 +185,41 @@ export default function Forecasts() {
           </TableBody>
         </Table>
       </div>
+
+      {editing && (
+        <Dialog open={!!editing} onOpenChange={() => setEditing(null)}>
+          <DialogContent>
+            <form onSubmit={handleUpdate}>
+              <DialogHeader>
+                <DialogTitle>Edit Forecast</DialogTitle>
+                <DialogDescription>Update the forecast target and probability.</DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <Label>Topic</Label>
+                  <Input value={form.topic} onChange={(e) => setForm((f) => ({ ...f, topic: e.target.value }))} />
+                </div>
+                <div className="grid gap-2">
+                  <Label>Target Event</Label>
+                  <Input value={form.target} onChange={(e) => setForm((f) => ({ ...f, target: e.target.value }))} required />
+                </div>
+                <div className="grid gap-2">
+                  <Label>Probability (%)</Label>
+                  <Input type="number" min={0} max={100} value={form.probability} onChange={(e) => setForm((f) => ({ ...f, probability: Number(e.target.value) }))} />
+                </div>
+                <div className="grid gap-2">
+                  <Label>Horizon</Label>
+                  <Input value={form.horizon} onChange={(e) => setForm((f) => ({ ...f, horizon: e.target.value }))} placeholder="e.g. 2025 election" />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setEditing(null)}>Cancel</Button>
+                <Button type="submit" disabled={updateForecast.isPending}>{updateForecast.isPending ? "Saving..." : "Save"}</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

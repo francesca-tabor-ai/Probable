@@ -33,6 +33,27 @@ export function useCreateStory() {
   });
 }
 
+export function useUpdateStory() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: UpdateStoryInput }) => {
+      const url = buildUrl(api.stories.update.path, { id });
+      const res = await fetch(url, {
+        method: api.stories.update.method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to update story");
+      return await res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [api.stories.list.path] });
+      queryClient.invalidateQueries({ queryKey: [api.dashboard.stats.path] });
+    },
+  });
+}
+
 export function usePublishStory() {
   const queryClient = useQueryClient();
   return useMutation({
